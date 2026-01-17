@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Invaders - Astronauta Espacial</title>
+    <title>Simi Invaders - Aventura Espacial</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
@@ -14,7 +14,7 @@
         }
 
         body {
-            background: linear-gradient(180deg, #1a0033 0%, #000428 50%, #004e92 100%);
+            background: linear-gradient(135deg, #1a0f3d 0%, #2d1b4e 25%, #4a2c6b 50%, #3d4e8c 75%, #2e5f8f 100%);
             font-family: 'Press Start 2P', cursive;
             overflow: hidden;
             display: flex;
@@ -27,9 +27,9 @@
             position: relative;
             width: 800px;
             height: 600px;
-            border: 4px solid #00ff00;
-            box-shadow: 0 0 20px #00ff00, inset 0 0 20px rgba(0, 255, 0, 0.2);
-            background: radial-gradient(circle at center, #0a1628 0%, #000000 100%);
+            border: 4px solid #ff00ff;
+            box-shadow: 0 0 20px #ff00ff, inset 0 0 30px rgba(255, 0, 255, 0.3);
+            background: radial-gradient(ellipse at center, #1a2845 0%, #0d1520 60%, #000000 100%);
             overflow: hidden;
         }
 
@@ -58,9 +58,9 @@
             top: 10px;
             left: 10px;
             z-index: 3;
-            color: #00ff00;
+            color: #00ffff;
             font-size: 12px;
-            text-shadow: 2px 2px 4px #000;
+            text-shadow: 2px 2px 4px #000, 0 0 10px #00ffff;
         }
 
         #gameOver {
@@ -130,8 +130,19 @@
         #startScreen h1 {
             font-size: 28px;
             margin-bottom: 30px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-shadow: 3px 3px 6px #000;
-            animation: pulse 2s infinite;
+            animation: pulse 2s infinite, gradient 3s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         #startScreen .instructions {
@@ -176,7 +187,7 @@
         </div>
 
         <div id="startScreen">
-            <h1>🚀 SPACE INVADERS 🚀</h1>
+            <h1>🚀 SIMI INVADERS 🚀</h1>
             <div class="instructions">← → MOVER</div>
             <div class="instructions">ESPACIO DISPARAR</div>
             <div class="instructions">P PAUSAR</div>
@@ -253,114 +264,272 @@
         }
 
         function drawPlayer() {
-            // Astronaut body (16-bit style)
-            ctx.fillStyle = player.color;
-            ctx.fillRect(player.x + 10, player.y + 10, 20, 25);
+            // Body (orange suit)
+            ctx.fillStyle = '#ff6600';
+            ctx.fillRect(player.x + 11, player.y + 18, 18, 20);
 
-            // Helmet
-            ctx.fillStyle = '#ffaa00';
-            ctx.fillRect(player.x + 12, player.y + 5, 16, 12);
+            // Body outline
+            ctx.fillStyle = '#cc4400';
+            ctx.fillRect(player.x + 11, player.y + 18, 2, 20);
+            ctx.fillRect(player.x + 27, player.y + 18, 2, 20);
 
-            // Visor
-            ctx.fillStyle = '#00ffff';
-            ctx.fillRect(player.x + 14, player.y + 7, 12, 6);
+            // Helmet (round orange)
+            ctx.fillStyle = '#ffaa33';
+            ctx.fillRect(player.x + 13, player.y + 8, 14, 14);
+            ctx.fillRect(player.x + 11, player.y + 10, 18, 10);
 
-            // Arms
-            ctx.fillStyle = '#ff4400';
-            ctx.fillRect(player.x + 5, player.y + 15, 5, 10);
-            ctx.fillRect(player.x + 30, player.y + 15, 5, 10);
+            // Helmet shine
+            ctx.fillStyle = '#ffcc66';
+            ctx.fillRect(player.x + 14, player.y + 9, 3, 3);
+
+            // Visor (cyan/blue glass)
+            ctx.fillStyle = '#00ddff';
+            ctx.fillRect(player.x + 14, player.y + 12, 12, 6);
+            ctx.fillRect(player.x + 16, player.y + 11, 8, 8);
+
+            // Visor shine
+            ctx.fillStyle = '#88ffff';
+            ctx.fillRect(player.x + 17, player.y + 13, 2, 2);
+
+            // Face inside visor (big smile)
+            ctx.fillStyle = '#ffdd88';
+            ctx.fillRect(player.x + 17, player.y + 13, 6, 4);
+
+            // Eyes
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(player.x + 18, player.y + 14, 1, 1);
+            ctx.fillRect(player.x + 21, player.y + 14, 1, 1);
+
+            // Smile
+            ctx.fillStyle = '#ff6600';
+            ctx.fillRect(player.x + 18, player.y + 16, 4, 1);
+
+            // Arms (punching up - one raised)
+            ctx.fillStyle = '#ff8833';
+            ctx.fillRect(player.x + 6, player.y + 20, 5, 8);
+            ctx.fillRect(player.x + 29, player.y + 16, 5, 6);
+
+            // Gloves
+            ctx.fillStyle = '#ffaa33';
+            ctx.fillRect(player.x + 6, player.y + 27, 5, 4);
+            ctx.fillRect(player.x + 29, player.y + 21, 5, 4);
 
             // Legs
+            ctx.fillStyle = '#ff4400';
+            ctx.fillRect(player.x + 13, player.y + 34, 6, 4);
+            ctx.fillRect(player.x + 21, player.y + 34, 6, 4);
+
+            // Boots
             ctx.fillStyle = '#cc3300';
-            ctx.fillRect(player.x + 12, player.y + 30, 7, 8);
-            ctx.fillRect(player.x + 21, player.y + 30, 7, 8);
+            ctx.fillRect(player.x + 12, player.y + 36, 7, 3);
+            ctx.fillRect(player.x + 21, player.y + 36, 7, 3);
 
             // Jetpack
-            ctx.fillStyle = '#666666';
-            ctx.fillRect(player.x + 15, player.y + 12, 10, 15);
+            ctx.fillStyle = '#555555';
+            ctx.fillRect(player.x + 16, player.y + 20, 8, 12);
 
-            // Fire from jetpack
-            if (Math.random() > 0.5) {
-                ctx.fillStyle = '#ff0000';
-                ctx.fillRect(player.x + 17, player.y + 27, 6, 4);
-            }
+            // Jetpack details
+            ctx.fillStyle = '#777777';
+            ctx.fillRect(player.x + 17, player.y + 22, 2, 8);
+            ctx.fillRect(player.x + 21, player.y + 22, 2, 8);
+
+            // Jetpack fire (animated)
+            const fireFrame = Math.floor(Date.now() / 100) % 3;
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(player.x + 17, player.y + 32, 2, 3 + fireFrame);
+            ctx.fillRect(player.x + 21, player.y + 32, 2, 3 + fireFrame);
+
+            ctx.fillStyle = '#ffaa00';
+            ctx.fillRect(player.x + 17, player.y + 34 + fireFrame, 2, 2);
+            ctx.fillRect(player.x + 21, player.y + 34 + fireFrame, 2, 2);
+
+            ctx.fillStyle = '#ffff00';
+            ctx.fillRect(player.x + 17, player.y + 35 + fireFrame, 2, 1);
+            ctx.fillRect(player.x + 21, player.y + 35 + fireFrame, 2, 1);
         }
 
         function drawBullet(bullet) {
+            // Laser beam style
             ctx.fillStyle = '#00ffff';
-            ctx.fillRect(bullet.x, bullet.y, 3, 10);
+            ctx.fillRect(bullet.x, bullet.y, 4, 12);
+            ctx.fillStyle = '#88ffff';
+            ctx.fillRect(bullet.x + 1, bullet.y + 1, 2, 10);
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(bullet.x + 1, bullet.y + 2, 1, 6);
+            ctx.fillRect(bullet.x + 1, bullet.y + 2, 2, 6);
+
+            // Glow effect
+            ctx.fillStyle = '#00ffff';
+            ctx.globalAlpha = 0.3;
+            ctx.fillRect(bullet.x - 1, bullet.y, 6, 12);
+            ctx.globalAlpha = 1.0;
         }
 
         function drawEnemy(enemy) {
             const type = enemy.type;
 
             if (type.name === 'planeta') {
-                // Saturn-like planet
-                ctx.fillStyle = type.color;
-                ctx.fillRect(enemy.x + 5, enemy.y + 8, 20, 14);
-                ctx.fillRect(enemy.x + 8, enemy.y + 5, 14, 20);
+                // Saturn planet with BIG HAPPY FACE (like in mural)
+                ctx.fillStyle = '#ffaa00';
+                ctx.fillRect(enemy.x + 6, enemy.y + 6, 18, 18);
+                ctx.fillRect(enemy.x + 4, enemy.y + 9, 22, 12);
 
-                // Ring
-                ctx.fillStyle = '#ff8800';
-                ctx.fillRect(enemy.x, enemy.y + 12, 30, 6);
+                // Planet shading
+                ctx.fillStyle = '#ff9900';
+                ctx.fillRect(enemy.x + 8, enemy.y + 8, 14, 14);
 
-                // Eyes
+                // Ring (colorful like mural)
+                ctx.fillStyle = '#ff6633';
+                ctx.fillRect(enemy.x, enemy.y + 13, 30, 4);
+                ctx.fillStyle = '#ff8844';
+                ctx.fillRect(enemy.x + 2, enemy.y + 14, 26, 2);
+
+                // Ring behind planet
+                ctx.fillStyle = '#cc5522';
+                ctx.fillRect(enemy.x, enemy.y + 13, 6, 4);
+                ctx.fillRect(enemy.x + 24, enemy.y + 13, 6, 4);
+
+                // BIG EYES (happy look)
                 ctx.fillStyle = '#000000';
-                ctx.fillRect(enemy.x + 10, enemy.y + 12, 4, 4);
-                ctx.fillRect(enemy.x + 16, enemy.y + 12, 4, 4);
+                ctx.fillRect(enemy.x + 9, enemy.y + 12, 3, 4);
+                ctx.fillRect(enemy.x + 18, enemy.y + 12, 3, 4);
+
+                // Eye shine
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(enemy.x + 10, enemy.y + 13, 1, 1);
+                ctx.fillRect(enemy.x + 19, enemy.y + 13, 1, 1);
+
+                // BIG SMILE
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(enemy.x + 10, enemy.y + 18, 10, 2);
+                ctx.fillRect(enemy.x + 9, enemy.y + 17, 2, 2);
+                ctx.fillRect(enemy.x + 19, enemy.y + 17, 2, 2);
+
+                // Rosy cheeks
+                ctx.fillStyle = '#ff5555';
+                ctx.fillRect(enemy.x + 7, enemy.y + 16, 2, 2);
+                ctx.fillRect(enemy.x + 21, enemy.y + 16, 2, 2);
 
             } else if (type.name === 'ufo') {
-                // UFO
-                ctx.fillStyle = type.color;
-                ctx.fillRect(enemy.x + 5, enemy.y + 8, 25, 10);
-                ctx.fillRect(enemy.x + 10, enemy.y + 3, 15, 5);
+                // UFO (green like in mural)
+                ctx.fillStyle = '#00ff88';
+                ctx.fillRect(enemy.x + 7, enemy.y + 10, 21, 8);
+                ctx.fillRect(enemy.x + 5, enemy.y + 12, 25, 4);
 
-                // Dome
+                // Dome (transparent green)
+                ctx.fillStyle = '#00dd77';
+                ctx.fillRect(enemy.x + 12, enemy.y + 6, 11, 8);
+                ctx.fillRect(enemy.x + 14, enemy.y + 4, 7, 4);
+
+                // Dome shine
+                ctx.fillStyle = '#88ffcc';
+                ctx.fillRect(enemy.x + 15, enemy.y + 5, 3, 2);
+
+                // Windows/portholes
+                ctx.fillStyle = '#006644';
+                ctx.fillRect(enemy.x + 14, enemy.y + 8, 2, 3);
+                ctx.fillRect(enemy.x + 17, enemy.y + 8, 2, 3);
+                ctx.fillRect(enemy.x + 20, enemy.y + 8, 2, 3);
+
+                // Bottom lights (animated blinking)
+                const blink = Math.floor(Date.now() / 200) % 3;
+                ctx.fillStyle = blink === 0 ? '#ffff00' : '#ff00ff';
+                ctx.fillRect(enemy.x + 8, enemy.y + 16, 3, 2);
+                ctx.fillStyle = blink === 1 ? '#ffff00' : '#ff00ff';
+                ctx.fillRect(enemy.x + 15, enemy.y + 16, 3, 2);
+                ctx.fillStyle = blink === 2 ? '#ffff00' : '#ff00ff';
+                ctx.fillRect(enemy.x + 22, enemy.y + 16, 3, 2);
+
+                // UFO outline highlights
                 ctx.fillStyle = '#00cc66';
-                ctx.fillRect(enemy.x + 12, enemy.y + 5, 11, 8);
-
-                // Lights
-                ctx.fillStyle = Math.random() > 0.5 ? '#ffff00' : '#ff00ff';
-                ctx.fillRect(enemy.x + 8, enemy.y + 16, 4, 2);
-                ctx.fillRect(enemy.x + 15, enemy.y + 16, 4, 2);
-                ctx.fillRect(enemy.x + 22, enemy.y + 16, 4, 2);
+                ctx.fillRect(enemy.x + 7, enemy.y + 10, 21, 2);
 
             } else if (type.name === 'alien') {
-                // Round alien
-                ctx.fillStyle = type.color;
-                ctx.fillRect(enemy.x + 6, enemy.y + 4, 16, 20);
-                ctx.fillRect(enemy.x + 4, enemy.y + 8, 20, 12);
+                // Round alien with ONE BIG EYE (like in mural)
+                ctx.fillStyle = '#ffdd00';
+                ctx.fillRect(enemy.x + 7, enemy.y + 6, 14, 18);
+                ctx.fillRect(enemy.x + 5, enemy.y + 10, 18, 10);
 
-                // Eye
+                // Body shading
+                ctx.fillStyle = '#ffcc00';
+                ctx.fillRect(enemy.x + 8, enemy.y + 8, 12, 14);
+
+                // ONE GIANT EYE (white)
                 ctx.fillStyle = '#ffffff';
-                ctx.fillRect(enemy.x + 9, enemy.y + 10, 10, 10);
-                ctx.fillStyle = '#0000ff';
-                ctx.fillRect(enemy.x + 12, enemy.y + 13, 4, 4);
+                ctx.fillRect(enemy.x + 9, enemy.y + 11, 10, 8);
+                ctx.fillRect(enemy.x + 11, enemy.y + 10, 6, 10);
+
+                // Eye outline/shadow
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(enemy.x + 10, enemy.y + 11, 8, 1);
+
+                // Blue pupil (big)
+                ctx.fillStyle = '#0066ff';
+                ctx.fillRect(enemy.x + 12, enemy.y + 13, 4, 5);
+
+                // Pupil shine
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(enemy.x + 13, enemy.y + 14, 2, 2);
+
+                // Mouth (small smile)
+                ctx.fillStyle = '#ff6600';
+                ctx.fillRect(enemy.x + 11, enemy.y + 20, 6, 2);
+
+                // Little antenna/details on top
+                ctx.fillStyle = '#ffaa00';
+                ctx.fillRect(enemy.x + 13, enemy.y + 5, 2, 2);
 
             } else if (type.name === 'satelite') {
-                // Satellite
-                ctx.fillStyle = type.color;
-                ctx.fillRect(enemy.x + 12, enemy.y + 8, 8, 16);
+                // Satellite (more detailed)
+                ctx.fillStyle = '#0099ff';
+                ctx.fillRect(enemy.x + 13, enemy.y + 10, 6, 12);
 
-                // Solar panels
-                ctx.fillStyle = '#0088ff';
-                ctx.fillRect(enemy.x + 2, enemy.y + 12, 8, 8);
-                ctx.fillRect(enemy.x + 22, enemy.y + 12, 8, 8);
+                // Body details
+                ctx.fillStyle = '#0077cc';
+                ctx.fillRect(enemy.x + 14, enemy.y + 11, 4, 10);
 
-                // Antenna
+                // Solar panels (blue/cyan)
+                ctx.fillStyle = '#0088dd';
+                ctx.fillRect(enemy.x + 3, enemy.y + 13, 9, 6);
+                ctx.fillRect(enemy.x + 20, enemy.y + 13, 9, 6);
+
+                // Solar panel grid lines
+                ctx.fillStyle = '#006699';
+                ctx.fillRect(enemy.x + 5, enemy.y + 14, 1, 4);
+                ctx.fillRect(enemy.x + 7, enemy.y + 14, 1, 4);
+                ctx.fillRect(enemy.x + 22, enemy.y + 14, 1, 4);
+                ctx.fillRect(enemy.x + 24, enemy.y + 14, 1, 4);
+
+                // Antenna on top
                 ctx.fillStyle = '#ffffff';
-                ctx.fillRect(enemy.x + 14, enemy.y + 4, 4, 4);
-                ctx.fillRect(enemy.x + 15, enemy.y + 2, 2, 2);
+                ctx.fillRect(enemy.x + 15, enemy.y + 6, 2, 4);
+                ctx.fillRect(enemy.x + 13, enemy.y + 5, 6, 2);
+                ctx.fillRect(enemy.x + 14, enemy.y + 4, 4, 2);
+
+                // Blinking light
+                if (Math.random() > 0.7) {
+                    ctx.fillStyle = '#ff0000';
+                    ctx.fillRect(enemy.x + 15, enemy.y + 15, 2, 2);
+                }
             }
         }
 
         function drawEnemyBullet(bullet) {
+            // Energy ball style
             ctx.fillStyle = '#ff0000';
-            ctx.fillRect(bullet.x, bullet.y, 4, 8);
-            ctx.fillStyle = '#ff8800';
-            ctx.fillRect(bullet.x + 1, bullet.y + 2, 2, 4);
+            ctx.fillRect(bullet.x + 1, bullet.y + 1, 4, 6);
+            ctx.fillRect(bullet.x + 2, bullet.y, 2, 8);
+
+            ctx.fillStyle = '#ff6600';
+            ctx.fillRect(bullet.x + 2, bullet.y + 2, 2, 4);
+
+            ctx.fillStyle = '#ffaa00';
+            ctx.fillRect(bullet.x + 2, bullet.y + 3, 2, 2);
+
+            // Glow effect
+            ctx.fillStyle = '#ff0000';
+            ctx.globalAlpha = 0.4;
+            ctx.fillRect(bullet.x, bullet.y, 6, 8);
+            ctx.globalAlpha = 1.0;
         }
 
         function createEnemies() {
