@@ -430,196 +430,179 @@
             const centerX = player.x + player.width / 2;
             const centerY = player.y + player.height / 2;
 
-            // Bounce animation
-            const bounce = Math.sin(Date.now() / 150) * 2;
-            const squash = 1 + Math.sin(Date.now() / 100) * 0.05;
+            // Rubber hose animation - exaggerated bounce
+            const bounce = Math.sin(Date.now() / 150) * 3;
+            const squash = 1 + Math.sin(Date.now() / 100) * 0.1;
+            const armWave = Math.sin(Date.now() / 200);
 
             ctx.save();
             ctx.translate(0, bounce);
 
-            // Shadow
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-            ctx.shadowBlur = 10;
-            ctx.shadowOffsetX = 3;
-            ctx.shadowOffsetY = 3;
+            // ========== CUPHEAD STYLE ASTRONAUT (based on mural) ==========
 
-            // Jetpack (behind player)
-            const jetpackGradient = ctx.createLinearGradient(centerX - 5, centerY, centerX + 5, centerY + 15);
-            jetpackGradient.addColorStop(0, '#666666');
-            jetpackGradient.addColorStop(1, '#333333');
-            ctx.fillStyle = jetpackGradient;
+            // Jetpack fire behind (simplified)
+            const fireFrame = Math.sin(Date.now() / 80) * 3;
+            ctx.fillStyle = '#ff6600';
             ctx.beginPath();
-            ctx.roundRect(centerX - 6, centerY + 2, 12, 18, 3);
+            ctx.moveTo(centerX, centerY + 20);
+            ctx.quadraticCurveTo(centerX - 5, centerY + 25 + fireFrame, centerX - 3, centerY + 30 + fireFrame);
+            ctx.quadraticCurveTo(centerX, centerY + 28 + fireFrame, centerX + 3, centerY + 30 + fireFrame);
+            ctx.quadraticCurveTo(centerX + 5, centerY + 25 + fireFrame, centerX, centerY + 20);
             ctx.fill();
 
-            // Jetpack details
-            ctx.fillStyle = '#888888';
+            ctx.fillStyle = '#ffdd00';
             ctx.beginPath();
-            ctx.arc(centerX - 3, centerY + 8, 2, 0, Math.PI * 2);
-            ctx.arc(centerX + 3, centerY + 8, 2, 0, Math.PI * 2);
+            ctx.moveTo(centerX, centerY + 22);
+            ctx.quadraticCurveTo(centerX - 3, centerY + 24 + fireFrame, centerX, centerY + 27 + fireFrame);
+            ctx.quadraticCurveTo(centerX + 3, centerY + 24 + fireFrame, centerX, centerY + 22);
             ctx.fill();
 
-            ctx.shadowBlur = 0;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
+            // Body - SIMPLE OVAL (orange suit from mural)
+            ctx.save();
+            ctx.translate(centerX, centerY + 5);
+            ctx.scale(1, squash);
+            ctx.translate(-centerX, -(centerY + 5));
 
-            // Jetpack fire (animated)
-            const fireFrame = (Date.now() / 80) % 1;
-            const fireHeight = 6 + Math.sin(fireFrame * Math.PI * 2) * 3;
-
-            // Red flame
-            const flameGradient1 = ctx.createRadialGradient(centerX - 3, centerY + 20, 0, centerX - 3, centerY + 20, 5);
-            flameGradient1.addColorStop(0, '#ffff00');
-            flameGradient1.addColorStop(0.3, '#ff6600');
-            flameGradient1.addColorStop(1, 'rgba(255, 0, 0, 0)');
-            ctx.fillStyle = flameGradient1;
             ctx.beginPath();
-            ctx.ellipse(centerX - 3, centerY + 20, 3, fireHeight, 0, 0, Math.PI * 2);
+            ctx.ellipse(centerX, centerY + 5, 10, 14, 0, 0, Math.PI * 2);
+            strokeOutline(ctx, 5);
+            ctx.fillStyle = '#ff7722';
             ctx.fill();
 
-            const flameGradient2 = ctx.createRadialGradient(centerX + 3, centerY + 20, 0, centerX + 3, centerY + 20, 5);
-            flameGradient2.addColorStop(0, '#ffff00');
-            flameGradient2.addColorStop(0.3, '#ff6600');
-            flameGradient2.addColorStop(1, 'rgba(255, 0, 0, 0)');
-            ctx.fillStyle = flameGradient2;
-            ctx.beginPath();
-            ctx.ellipse(centerX + 3, centerY + 20, 3, fireHeight, 0, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.restore();
 
-            // Body (orange suit with gradient)
-            const bodyGradient = ctx.createLinearGradient(centerX - 10, centerY, centerX + 10, centerY + 15);
-            bodyGradient.addColorStop(0, '#ff8833');
-            bodyGradient.addColorStop(0.5, '#ff6600');
-            bodyGradient.addColorStop(1, '#cc5500');
-            ctx.fillStyle = bodyGradient;
-            ctx.beginPath();
-            ctx.roundRect(centerX - 9, centerY + 2, 18, 22, 5);
-            ctx.fill();
-
-            // Belt
-            ctx.fillStyle = '#555555';
-            ctx.fillRect(centerX - 9, centerY + 12, 18, 3);
-            ctx.fillStyle = '#ffaa00';
-            ctx.beginPath();
-            ctx.arc(centerX, centerY + 13.5, 2, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Arms with gradient
-            const armGradient = ctx.createLinearGradient(centerX - 15, centerY + 5, centerX - 10, centerY + 15);
-            armGradient.addColorStop(0, '#ff9944');
-            armGradient.addColorStop(1, '#ff7722');
-
-            // Left arm (raised - punching up!)
-            ctx.fillStyle = armGradient;
-            ctx.beginPath();
-            ctx.ellipse(centerX - 13, centerY + 3, 4, 8, -0.3, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Left glove
-            ctx.fillStyle = '#ffbb44';
-            ctx.beginPath();
-            ctx.arc(centerX - 15, centerY, 4, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Right arm
-            ctx.fillStyle = armGradient;
-            ctx.beginPath();
-            ctx.ellipse(centerX + 13, centerY + 8, 4, 9, 0.3, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Right glove
-            ctx.fillStyle = '#ffbb44';
-            ctx.beginPath();
-            ctx.arc(centerX + 15, centerY + 15, 4, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Legs
-            ctx.fillStyle = '#ff5522';
-            ctx.beginPath();
-            ctx.ellipse(centerX - 5, centerY + 27, 3.5, 6, 0, 0, Math.PI * 2);
-            ctx.ellipse(centerX + 5, centerY + 27, 3.5, 6, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Boots
-            const bootGradient = ctx.createRadialGradient(centerX - 5, centerY + 32, 0, centerX - 5, centerY + 32, 5);
-            bootGradient.addColorStop(0, '#dd4422');
-            bootGradient.addColorStop(1, '#aa3311');
-            ctx.fillStyle = bootGradient;
-            ctx.beginPath();
-            ctx.ellipse(centerX - 5, centerY + 32, 4.5, 3, 0, 0, Math.PI * 2);
-            ctx.ellipse(centerX + 5, centerY + 32, 4.5, 3, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Helmet (round with gradient like in mural)
-            const helmetGradient = ctx.createRadialGradient(centerX - 3, centerY - 10, 2, centerX, centerY - 7, 14);
-            helmetGradient.addColorStop(0, '#ffcc66');
-            helmetGradient.addColorStop(0.6, '#ffaa33');
-            helmetGradient.addColorStop(1, '#ff8811');
-
-            // Helmet outline (Cuphead style)
-            ctx.beginPath();
-            ctx.arc(centerX, centerY - 7, 13, 0, Math.PI * 2);
-            strokeOutline(ctx, 4);
-
-            // Helmet fill
-            ctx.fillStyle = helmetGradient;
-            ctx.fill();
-
-            // Helmet shine
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-            ctx.beginPath();
-            ctx.ellipse(centerX - 4, centerY - 12, 4, 5, -0.3, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Visor (cyan glass with transparency)
-            const visorGradient = ctx.createLinearGradient(centerX - 8, centerY - 10, centerX + 8, centerY - 2);
-            visorGradient.addColorStop(0, 'rgba(0, 221, 255, 0.8)');
-            visorGradient.addColorStop(0.5, 'rgba(0, 187, 255, 0.9)');
-            visorGradient.addColorStop(1, 'rgba(0, 153, 255, 0.7)');
-            ctx.fillStyle = visorGradient;
-            ctx.beginPath();
-            ctx.ellipse(centerX, centerY - 6, 9, 7, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Visor shine
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-            ctx.beginPath();
-            ctx.ellipse(centerX - 3, centerY - 9, 3, 2, -0.2, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Face inside visor (skin tone)
-            ctx.fillStyle = '#ffdd99';
-            ctx.beginPath();
-            ctx.ellipse(centerX, centerY - 5, 7, 5, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Eyes (BIG happy eyes like in mural)
-            ctx.fillStyle = '#000000';
-            ctx.beginPath();
-            ctx.arc(centerX - 3, centerY - 6, 1.5, 0, Math.PI * 2);
-            ctx.arc(centerX + 3, centerY - 6, 1.5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Eye shine
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(centerX - 2.5, centerY - 6.5, 0.7, 0, Math.PI * 2);
-            ctx.arc(centerX + 3.5, centerY - 6.5, 0.7, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Big smile (like in mural)
+            // Rubber hose LEGS (black tubes with orange boots)
+            // Left leg
             ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 5;
             ctx.lineCap = 'round';
             ctx.beginPath();
-            ctx.arc(centerX, centerY - 4, 4, 0.2, Math.PI - 0.2);
+            ctx.moveTo(centerX - 4, centerY + 16);
+            const legBend = Math.sin(Date.now() / 300) * 2;
+            ctx.quadraticCurveTo(centerX - 6, centerY + 22 + legBend, centerX - 5, centerY + 28);
             ctx.stroke();
 
-            // Rosy cheeks
-            ctx.fillStyle = 'rgba(255, 100, 100, 0.4)';
+            // Right leg
             ctx.beginPath();
-            ctx.arc(centerX - 6, centerY - 3, 2, 0, Math.PI * 2);
-            ctx.arc(centerX + 6, centerY - 3, 2, 0, Math.PI * 2);
+            ctx.moveTo(centerX + 4, centerY + 16);
+            ctx.quadraticCurveTo(centerX + 6, centerY + 22 - legBend, centerX + 5, centerY + 28);
+            ctx.stroke();
+
+            // Boots (simplified, from mural)
+            ctx.beginPath();
+            ctx.ellipse(centerX - 5, centerY + 30, 5, 4, 0, 0, Math.PI * 2);
+            ctx.ellipse(centerX + 5, centerY + 30, 5, 4, 0, 0, Math.PI * 2);
+            strokeOutline(ctx, 3);
+            ctx.fillStyle = '#dd4422';
+            ctx.fill();
+
+            // Rubber hose ARMS (black tubes)
+            // Left arm RAISED UP (like in mural - victory pose!)
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(centerX - 10, centerY + 2);
+            ctx.quadraticCurveTo(centerX - 14 + armWave * 2, centerY - 3, centerX - 12, centerY - 8);
+            ctx.stroke();
+
+            // Right arm (down)
+            ctx.beginPath();
+            ctx.moveTo(centerX + 10, centerY + 2);
+            ctx.quadraticCurveTo(centerX + 12 - armWave, centerY + 8, centerX + 11, centerY + 12);
+            ctx.stroke();
+
+            // HUGE WHITE GLOVES (Cuphead style!)
+            // Left glove (raised - fist!)
+            ctx.beginPath();
+            ctx.arc(centerX - 12, centerY - 10, 6, 0, Math.PI * 2);
+            strokeOutline(ctx, 3);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+
+            // Thumb on fist
+            ctx.beginPath();
+            ctx.arc(centerX - 16, centerY - 8, 3, 0, Math.PI * 2);
+            strokeOutline(ctx, 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+
+            // Right glove (open hand)
+            ctx.beginPath();
+            ctx.ellipse(centerX + 11, centerY + 14, 5, 6, 0.3, 0, Math.PI * 2);
+            strokeOutline(ctx, 3);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+
+            // Fingers on open hand
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.arc(centerX + 9 + i * 2, centerY + 9, 2, 0, Math.PI * 2);
+                strokeOutline(ctx, 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+            }
+
+            // HEAD - BIG ROUND HELMET (orange like mural)
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - 8, 12, 0, Math.PI * 2);
+            strokeOutline(ctx, 5);
+            ctx.fillStyle = '#ffaa44';
+            ctx.fill();
+
+            // Helmet shine (simple highlight)
+            ctx.fillStyle = '#ffdd88';
+            ctx.beginPath();
+            ctx.arc(centerX - 4, centerY - 13, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Visor WINDOW (cyan/blue - visible face area)
+            ctx.beginPath();
+            ctx.ellipse(centerX, centerY - 7, 9, 8, 0, 0, Math.PI * 2);
+            strokeOutline(ctx, 3);
+            ctx.fillStyle = 'rgba(100, 200, 255, 0.3)';
+            ctx.fill();
+
+            // HUGE CARTOON EYES (Cuphead style pie eyes!)
+            const eyeBlink = Math.sin(Date.now() / 3000) > 0.95 ? 3 : 0;
+
+            // Left eye (black pie cut)
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.arc(centerX - 3, centerY - 8, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Right eye
+            ctx.beginPath();
+            ctx.arc(centerX + 3, centerY - 8, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // White shine in eyes (Cuphead signature!)
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(centerX - 2, centerY - 9, 1.5, 0, Math.PI * 2);
+            ctx.arc(centerX + 4, centerY - 9, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // GIANT SMILE (from mural - huge happy grin!)
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - 3, 6, 0.1, Math.PI - 0.1);
+            ctx.stroke();
+
+            // Smile fill (white teeth showing)
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - 3, 5, 0.1, Math.PI - 0.1);
+            ctx.lineTo(centerX, centerY - 3);
+            ctx.fill();
+
+            // Tongue
+            ctx.fillStyle = '#ff6666';
+            ctx.beginPath();
+            ctx.ellipse(centerX, centerY + 1, 2, 1.5, 0, 0, Math.PI);
             ctx.fill();
 
             ctx.restore();
@@ -665,339 +648,310 @@
             ctx.save();
 
             if (type.name === 'planeta') {
-                // Saturn planet with BIG HAPPY FACE (like in mural - Cuphead style)
-                const wobble = Math.sin(Date.now() / 200 + centerX) * 1;
+                // SATURN PLANET - Cuphead style (from mural)
+                const wobble = Math.sin(Date.now() / 200 + centerX) * 1.5;
+                const bounce = Math.sin(Date.now() / 300 + centerX) * 2;
 
-                // Shadow
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-                ctx.shadowBlur = 8;
-                ctx.shadowOffsetX = 2;
-                ctx.shadowOffsetY = 2;
-
-                // Ring behind (Saturn's ring) with outline
-                const ringGradient = ctx.createLinearGradient(centerX - 20, centerY, centerX + 20, centerY);
-                ringGradient.addColorStop(0, 'rgba(255, 102, 51, 0.6)');
-                ringGradient.addColorStop(0.5, '#ff8844');
-                ringGradient.addColorStop(1, 'rgba(204, 85, 34, 0.6)');
-
+                // Animated RING behind (wavy like rubber)
                 ctx.beginPath();
-                ctx.ellipse(centerX, centerY + wobble, 18, 5, 0, 0, Math.PI * 2);
-                strokeOutline(ctx, 3);
-                ctx.fillStyle = ringGradient;
-                ctx.fill();
-
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-
-                // Planet body (round with gradient) with thick outline
-                const planetGradient = ctx.createRadialGradient(centerX - 5, centerY - 5, 2, centerX, centerY, 15);
-                planetGradient.addColorStop(0, '#ffcc66');
-                planetGradient.addColorStop(0.5, '#ffaa33');
-                planetGradient.addColorStop(1, '#ff8811');
-
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, 12, 0, Math.PI * 2);
+                ctx.ellipse(centerX, centerY + bounce, 20, 6, wobble * 0.1, 0, Math.PI * 2);
                 strokeOutline(ctx, 4);
-                ctx.fillStyle = planetGradient;
+
+                const ringGrad = ctx.createLinearGradient(centerX - 20, centerY, centerX + 20, centerY);
+                ringGrad.addColorStop(0, '#ff8844');
+                ringGrad.addColorStop(0.5, '#ffaa55');
+                ringGrad.addColorStop(1, '#ff8844');
+                ctx.fillStyle = ringGrad;
                 ctx.fill();
 
-                // Ring in front
-                ctx.fillStyle = ringGradient;
+                // PLANET BODY (simple circle - orange like mural)
                 ctx.beginPath();
-                ctx.ellipse(centerX, centerY, 18, 5, 0, Math.PI, Math.PI * 2);
+                ctx.arc(centerX, centerY, 13, 0, Math.PI * 2);
+                strokeOutline(ctx, 5);
+                ctx.fillStyle = '#ffaa44';
                 ctx.fill();
 
-                // BIG EYES (happy look)
+                // Ring in front (bottom half)
+                ctx.beginPath();
+                ctx.ellipse(centerX, centerY, 20, 6, wobble * 0.1, Math.PI, Math.PI * 2);
+                strokeOutline(ctx, 4);
+                ctx.fillStyle = ringGrad;
+                ctx.fill();
+
+                // HUGE HAPPY EYES (Cuphead pie eyes)
                 ctx.fillStyle = '#000000';
                 ctx.beginPath();
-                ctx.ellipse(centerX - 4, centerY - 2, 2, 3, 0, 0, Math.PI * 2);
-                ctx.ellipse(centerX + 4, centerY - 2, 2, 3, 0, 0, Math.PI * 2);
+                ctx.arc(centerX - 4, centerY - 3, 3.5, 0, Math.PI * 2);
+                ctx.arc(centerX + 4, centerY - 3, 3.5, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Eye shine
+                // Eye whites (shine)
                 ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
-                ctx.arc(centerX - 3.5, centerY - 3, 1, 0, Math.PI * 2);
-                ctx.arc(centerX + 4.5, centerY - 3, 1, 0, Math.PI * 2);
+                ctx.arc(centerX - 3, centerY - 4, 1.5, 0, Math.PI * 2);
+                ctx.arc(centerX + 5, centerY - 4, 1.5, 0, Math.PI * 2);
                 ctx.fill();
 
-                // BIG SMILE
+                // GIANT SMILE (like mural - super wide!)
                 ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 3;
                 ctx.lineCap = 'round';
                 ctx.beginPath();
-                ctx.arc(centerX, centerY + 2, 6, 0.3, Math.PI - 0.3);
+                ctx.arc(centerX, centerY + 3, 8, 0.2, Math.PI - 0.2);
                 ctx.stroke();
 
-                // Rosy cheeks
-                ctx.fillStyle = 'rgba(255, 85, 85, 0.6)';
+                // Smile teeth
+                ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
-                ctx.arc(centerX - 9, centerY + 1, 2.5, 0, Math.PI * 2);
-                ctx.arc(centerX + 9, centerY + 1, 2.5, 0, Math.PI * 2);
+                ctx.arc(centerX, centerY + 3, 7, 0.2, Math.PI - 0.2);
+                ctx.lineTo(centerX, centerY + 3);
+                ctx.fill();
+
+                // Rosy CHEEKS (pink circles)
+                ctx.fillStyle = '#ff9999';
+                ctx.beginPath();
+                ctx.arc(centerX - 10, centerY + 2, 3, 0, Math.PI * 2);
+                ctx.arc(centerX + 10, centerY + 2, 3, 0, Math.PI * 2);
                 ctx.fill();
 
             } else if (type.name === 'ufo') {
-                // UFO (green like in mural - Cuphead style)
-                const hover = Math.sin(Date.now() / 300 + centerX) * 2;
+                // UFO - Cuphead style (green from mural)
+                const hover = Math.sin(Date.now() / 250 + centerX) * 3;
+                const wobble = Math.sin(Date.now() / 200 + centerX) * 0.1;
 
-                // Shadow
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-                ctx.shadowBlur = 8;
-                ctx.shadowOffsetX = 2;
-                ctx.shadowOffsetY = 3;
-
-                // UFO base (saucer) with outline
-                const saucerGradient = ctx.createLinearGradient(centerX - 15, centerY, centerX + 15, centerY + 5);
-                saucerGradient.addColorStop(0, '#00ff99');
-                saucerGradient.addColorStop(0.5, '#00dd77');
-                saucerGradient.addColorStop(1, '#00bb55');
-
+                // SAUCER BASE (simple ellipse - green)
                 ctx.beginPath();
-                ctx.ellipse(centerX, centerY + 3 + hover, 15, 6, 0, 0, Math.PI * 2);
-                strokeOutline(ctx, 3);
-                ctx.fillStyle = saucerGradient;
+                ctx.ellipse(centerX, centerY + 5 + hover, 16, 6, wobble, 0, Math.PI * 2);
+                strokeOutline(ctx, 4);
+                ctx.fillStyle = '#00dd88';
                 ctx.fill();
 
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-
-                // Dome (transparent green)
-                const domeGradient = ctx.createRadialGradient(centerX - 2, centerY - 5, 2, centerX, centerY - 2, 10);
-                domeGradient.addColorStop(0, 'rgba(136, 255, 204, 0.9)');
-                domeGradient.addColorStop(0.5, 'rgba(0, 221, 119, 0.7)');
-                domeGradient.addColorStop(1, 'rgba(0, 187, 102, 0.5)');
-                ctx.fillStyle = domeGradient;
+                // Saucer detail lines
+                ctx.strokeStyle = '#009966';
+                ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.arc(centerX, centerY - 2, 8, Math.PI, Math.PI * 2);
+                ctx.ellipse(centerX, centerY + 5 + hover, 14, 5, wobble, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // DOME (half circle on top - lighter green)
+                ctx.beginPath();
+                ctx.arc(centerX, centerY + hover, 9, Math.PI, 0, false);
                 ctx.closePath();
+                strokeOutline(ctx, 4);
+                ctx.fillStyle = '#88ffcc';
                 ctx.fill();
 
-                // Dome top
+                // Dome highlight
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
                 ctx.beginPath();
-                ctx.ellipse(centerX, centerY - 2, 8, 3, 0, Math.PI, Math.PI * 2);
+                ctx.arc(centerX - 3, centerY - 4 + hover, 3, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Dome shine
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                // WINDOWS (simple black circles)
+                ctx.fillStyle = '#004433';
                 ctx.beginPath();
-                ctx.ellipse(centerX - 3, centerY - 6, 3, 2, -0.2, 0, Math.PI * 2);
+                ctx.arc(centerX - 5, centerY + 1 + hover, 2, 0, Math.PI * 2);
+                ctx.arc(centerX, centerY + 1 + hover, 2, 0, Math.PI * 2);
+                ctx.arc(centerX + 5, centerY + 1 + hover, 2, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Windows
-                ctx.fillStyle = 'rgba(0, 102, 68, 0.8)';
-                ctx.beginPath();
-                ctx.arc(centerX - 4, centerY - 1, 1.5, 0, Math.PI * 2);
-                ctx.arc(centerX, centerY - 1, 1.5, 0, Math.PI * 2);
-                ctx.arc(centerX + 4, centerY - 1, 1.5, 0, Math.PI * 2);
-                ctx.fill();
+                // LIGHT BEAM (animated - simple triangles)
+                const blink = Math.floor(Date.now() / 150) % 4;
+                if (blink < 3) {
+                    ctx.fillStyle = 'rgba(255, 255, 0, 0.3)';
+                    ctx.beginPath();
+                    ctx.moveTo(centerX - 4, centerY + 10 + hover);
+                    ctx.lineTo(centerX - 8, centerY + 18 + hover);
+                    ctx.lineTo(centerX + 8, centerY + 18 + hover);
+                    ctx.lineTo(centerX + 4, centerY + 10 + hover);
+                    ctx.closePath();
+                    ctx.fill();
 
-                // Bottom lights (animated)
-                const blink = Math.floor(Date.now() / 200) % 3;
-                const lightColors = ['#ffff00', '#ff00ff', '#00ffff'];
-                ctx.beginPath();
-                ctx.fillStyle = lightColors[blink];
-                ctx.arc(centerX - 8, centerY + 7, 2, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = lightColors[(blink + 1) % 3];
-                ctx.beginPath();
-                ctx.arc(centerX, centerY + 8, 2, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = lightColors[(blink + 2) % 3];
-                ctx.beginPath();
-                ctx.arc(centerX + 8, centerY + 7, 2, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Light glow
-                ctx.globalAlpha = 0.4;
-                ctx.beginPath();
-                ctx.arc(centerX - 8, centerY + 7, 4, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1.0;
+                    // Light circles at bottom
+                    const colors = ['#ffff00', '#00ffff', '#ff00ff'];
+                    ctx.fillStyle = colors[blink];
+                    ctx.beginPath();
+                    ctx.arc(centerX - 6, centerY + 11 + hover, 3, 0, Math.PI * 2);
+                    ctx.arc(centerX, centerY + 11 + hover, 3, 0, Math.PI * 2);
+                    ctx.arc(centerX + 6, centerY + 11 + hover, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
 
             } else if (type.name === 'alien') {
-                // Round alien with ONE BIG EYE (like in mural - Cuphead style)
-                const pulse = 1 + Math.sin(Date.now() / 250 + centerX) * 0.08;
+                // ONE-EYED ALIEN - Cuphead style (yellow from mural!)
+                const pulse = 1 + Math.sin(Date.now() / 200 + centerX) * 0.12;
+                const bob = Math.sin(Date.now() / 400 + centerX) * 2;
 
-                // Shadow
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-                ctx.shadowBlur = 8;
-                ctx.shadowOffsetX = 2;
-                ctx.shadowOffsetY = 2;
-
-                // Body (round with gradient) with outline
-                const bodyGradient = ctx.createRadialGradient(centerX - 4, centerY - 4, 2, centerX, centerY, 14);
-                bodyGradient.addColorStop(0, '#ffee55');
-                bodyGradient.addColorStop(0.6, '#ffdd33');
-                bodyGradient.addColorStop(1, '#ffbb00');
-
+                // BODY (simple circle/blob - yellow)
                 ctx.save();
-                ctx.translate(centerX, centerY);
-                ctx.scale(pulse, pulse);
-                ctx.translate(-centerX, -centerY);
+                ctx.translate(centerX, centerY + bob);
+                ctx.scale(pulse, 1 / pulse); // Squash and stretch!
+                ctx.translate(-centerX, -(centerY + bob));
 
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, 12, 0, Math.PI * 2);
-                strokeOutline(ctx, 4);
-                ctx.fillStyle = bodyGradient;
+                ctx.arc(centerX, centerY + bob, 14, 0, Math.PI * 2);
+                strokeOutline(ctx, 5);
+                ctx.fillStyle = '#ffdd33';
                 ctx.fill();
 
                 ctx.restore();
 
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
-
-                // Little antenna on top
+                // Tiny ANTENNA on top (wobbles)
+                const antennaWobble = Math.sin(Date.now() / 150 + centerX) * 0.3;
                 ctx.strokeStyle = '#ffaa00';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 3;
                 ctx.lineCap = 'round';
                 ctx.beginPath();
-                ctx.moveTo(centerX, centerY - 12);
-                ctx.lineTo(centerX, centerY - 16);
+                ctx.moveTo(centerX, centerY - 14 + bob);
+                ctx.quadraticCurveTo(centerX + antennaWobble * 3, centerY - 18 + bob, centerX, centerY - 20 + bob);
                 ctx.stroke();
 
+                // Antenna ball
+                ctx.beginPath();
+                ctx.arc(centerX, centerY - 20 + bob, 3, 0, Math.PI * 2);
+                strokeOutline(ctx, 2);
                 ctx.fillStyle = '#ff8800';
-                ctx.beginPath();
-                ctx.arc(centerX, centerY - 16, 2, 0, Math.PI * 2);
                 ctx.fill();
 
-                // ONE GIANT EYE
+                // ONE MASSIVE EYE (like from mural!)
+                // Eye white
+                ctx.beginPath();
+                ctx.arc(centerX, centerY + bob, 9, 0, Math.PI * 2);
+                strokeOutline(ctx, 3);
                 ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(centerX, centerY - 2, 7, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Eye outline
-                ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 1.5;
+                // Iris (blue gradient)
                 ctx.beginPath();
-                ctx.arc(centerX, centerY - 2, 7, 0, Math.PI * 2);
-                ctx.stroke();
-
-                // Blue pupil with gradient
-                const pupilGradient = ctx.createRadialGradient(centerX - 1, centerY - 3, 1, centerX, centerY - 2, 4);
-                pupilGradient.addColorStop(0, '#0088ff');
-                pupilGradient.addColorStop(1, '#0044cc');
-                ctx.fillStyle = pupilGradient;
-                ctx.beginPath();
-                ctx.arc(centerX, centerY - 2, 4, 0, Math.PI * 2);
+                ctx.arc(centerX, centerY + bob, 6, 0, Math.PI * 2);
+                const irisGrad = ctx.createRadialGradient(centerX - 2, centerY - 2 + bob, 1, centerX, centerY + bob, 6);
+                irisGrad.addColorStop(0, '#0099ff');
+                irisGrad.addColorStop(1, '#0055cc');
+                ctx.fillStyle = irisGrad;
                 ctx.fill();
 
-                // Pupil inner dark
+                // Black pupil
                 ctx.fillStyle = '#000000';
                 ctx.beginPath();
-                ctx.arc(centerX + 0.5, centerY - 1.5, 2, 0, Math.PI * 2);
+                ctx.arc(centerX + 1, centerY + 1 + bob, 3, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Pupil shine (large)
+                // BIG shine (Cuphead signature!)
                 ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
-                ctx.arc(centerX - 1, centerY - 3, 1.5, 0, Math.PI * 2);
+                ctx.arc(centerX - 2, centerY - 2 + bob, 2.5, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Small smile
-                ctx.strokeStyle = '#ff6600';
-                ctx.lineWidth = 1.5;
-                ctx.lineCap = 'round';
+                // Tiny MOUTH (simple curve)
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.arc(centerX, centerY + 5, 4, 0.2, Math.PI - 0.2);
+                ctx.arc(centerX, centerY + 10 + bob, 4, 0.3, Math.PI - 0.3);
                 ctx.stroke();
 
             } else if (type.name === 'satelite') {
-                // Satellite (Flash style)
+                // SATELLITE - Cuphead style (blue/silver from mural)
+                const spin = Math.sin(Date.now() / 400 + centerX) * 0.15;
+                const float = Math.sin(Date.now() / 350 + centerX) * 2;
 
-                // Shadow
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-                ctx.shadowBlur = 8;
-                ctx.shadowOffsetX = 2;
-                ctx.shadowOffsetY = 2;
+                // SOLAR PANELS (simple rectangles - blue)
+                // Left panel
+                ctx.save();
+                ctx.translate(centerX - 12, centerY + float);
+                ctx.rotate(spin);
+                ctx.translate(-(centerX - 12), -(centerY + float));
 
-                // Solar panels (left)
-                const panelGradient = ctx.createLinearGradient(centerX - 15, centerY - 3, centerX - 15, centerY + 3);
-                panelGradient.addColorStop(0, '#0099ff');
-                panelGradient.addColorStop(0.5, '#0077dd');
-                panelGradient.addColorStop(1, '#0055bb');
-                ctx.fillStyle = panelGradient;
                 ctx.beginPath();
-                ctx.roundRect(centerX - 18, centerY - 4, 8, 8, 1);
+                ctx.rect(centerX - 20, centerY - 6 + float, 10, 12);
+                strokeOutline(ctx, 4);
+                ctx.fillStyle = '#3399ff';
                 ctx.fill();
 
-                // Solar panel grid
-                ctx.strokeStyle = '#004488';
-                ctx.lineWidth = 0.5;
+                // Simple grid lines on panel
+                ctx.strokeStyle = '#0066cc';
+                ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.moveTo(centerX - 16, centerY - 4);
-                ctx.lineTo(centerX - 16, centerY + 4);
-                ctx.moveTo(centerX - 14, centerY - 4);
-                ctx.lineTo(centerX - 14, centerY + 4);
+                ctx.moveTo(centerX - 15, centerY - 6 + float);
+                ctx.lineTo(centerX - 15, centerY + 6 + float);
                 ctx.stroke();
 
-                // Solar panels (right)
-                ctx.fillStyle = panelGradient;
+                ctx.restore();
+
+                // Right panel
+                ctx.save();
+                ctx.translate(centerX + 12, centerY + float);
+                ctx.rotate(-spin);
+                ctx.translate(-(centerX + 12), -(centerY + float));
+
                 ctx.beginPath();
-                ctx.roundRect(centerX + 10, centerY - 4, 8, 8, 1);
+                ctx.rect(centerX + 10, centerY - 6 + float, 10, 12);
+                strokeOutline(ctx, 4);
+                ctx.fillStyle = '#3399ff';
                 ctx.fill();
 
-                ctx.strokeStyle = '#004488';
+                // Grid lines
+                ctx.strokeStyle = '#0066cc';
+                ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.moveTo(centerX + 12, centerY - 4);
-                ctx.lineTo(centerX + 12, centerY + 4);
-                ctx.moveTo(centerX + 14, centerY - 4);
-                ctx.lineTo(centerX + 14, centerY + 4);
+                ctx.moveTo(centerX + 15, centerY - 6 + float);
+                ctx.lineTo(centerX + 15, centerY + 6 + float);
                 ctx.stroke();
 
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
+                ctx.restore();
 
-                // Main body
-                const bodyGradient = ctx.createLinearGradient(centerX - 4, centerY - 6, centerX + 4, centerY + 6);
-                bodyGradient.addColorStop(0, '#0099ff');
-                bodyGradient.addColorStop(0.5, '#0077cc');
-                bodyGradient.addColorStop(1, '#0055aa');
-                ctx.fillStyle = bodyGradient;
+                // MAIN BODY (simple rounded rectangle - silver/gray)
                 ctx.beginPath();
-                ctx.roundRect(centerX - 4, centerY - 6, 8, 12, 2);
+                ctx.roundRect(centerX - 6, centerY - 8 + float, 12, 16, 3);
+                strokeOutline(ctx, 5);
+                ctx.fillStyle = '#ccddee';
                 ctx.fill();
 
-                // Body details
-                ctx.fillStyle = '#005599';
-                ctx.fillRect(centerX - 3, centerY - 5, 6, 1);
-                ctx.fillRect(centerX - 3, centerY, 6, 1);
-                ctx.fillRect(centerX - 3, centerY + 4, 6, 1);
-
-                // Antenna on top
-                ctx.strokeStyle = '#cccccc';
-                ctx.lineWidth = 1.5;
+                // Body highlight (simple stripe)
+                ctx.fillStyle = '#eeffff';
                 ctx.beginPath();
-                ctx.moveTo(centerX, centerY - 6);
-                ctx.lineTo(centerX, centerY - 10);
+                ctx.roundRect(centerX - 4, centerY - 6 + float, 3, 12, 1);
+                ctx.fill();
+
+                // Simple ANTENNA on top (wobbles)
+                const antennaWobble = Math.sin(Date.now() / 180 + centerX) * 0.2;
+                ctx.strokeStyle = '#888888';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY - 8 + float);
+                ctx.quadraticCurveTo(centerX + antennaWobble * 4, centerY - 12 + float, centerX, centerY - 14 + float);
                 ctx.stroke();
 
-                // Antenna dishes
-                ctx.fillStyle = '#eeeeee';
+                // Antenna dish (simple circle)
                 ctx.beginPath();
-                ctx.ellipse(centerX - 3, centerY - 10, 3, 1.5, 0, 0, Math.PI * 2);
-                ctx.ellipse(centerX + 3, centerY - 10, 3, 1.5, 0, 0, Math.PI * 2);
+                ctx.arc(centerX, centerY - 14 + float, 4, 0, Math.PI * 2);
+                strokeOutline(ctx, 3);
+                ctx.fillStyle = '#ffdd88';
                 ctx.fill();
 
-                // Blinking light
-                if (Math.random() > 0.7) {
-                    ctx.fillStyle = '#ff0000';
+                // BLINKING LIGHT (Cuphead style - center)
+                const blink = Math.floor(Date.now() / 250) % 3;
+                if (blink === 0) {
                     ctx.beginPath();
-                    ctx.arc(centerX, centerY, 2, 0, Math.PI * 2);
+                    ctx.arc(centerX, centerY + float, 3, 0, Math.PI * 2);
+                    strokeOutline(ctx, 2);
+                    ctx.fillStyle = '#ff3333';
                     ctx.fill();
 
-                    // Glow
-                    ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+                    // White center shine
+                    ctx.fillStyle = '#ffffff';
                     ctx.beginPath();
-                    ctx.arc(centerX, centerY, 4, 0, Math.PI * 2);
+                    ctx.arc(centerX - 1, centerY - 1 + float, 1, 0, Math.PI * 2);
                     ctx.fill();
                 }
+
+                // SIMPLE FACE ELEMENTS (Cuphead style)
+                // Two small eyes (dots)
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(centerX - 3, centerY - 2 + float, 1.5, 0, Math.PI * 2);
+                ctx.arc(centerX + 3, centerY - 2 + float, 1.5, 0, Math.PI * 2);
+                ctx.fill();
             }
 
             ctx.restore();
