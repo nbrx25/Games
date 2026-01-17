@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simi Invaders - Aventura Espacial</title>
+    <title>Simi Invaders - Aventura Espacial Retro</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
         * {
             margin: 0;
             padding: 0;
@@ -14,8 +12,8 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1a0f3d 0%, #2d1b4e 25%, #4a2c6b 50%, #3d4e8c 75%, #2e5f8f 100%);
-            font-family: 'Press Start 2P', cursive;
+            background: #1a1410;
+            font-family: 'Courier New', monospace;
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -25,260 +23,1074 @@
 
         #gameContainer {
             position: relative;
-            width: 800px;
-            height: 600px;
-            border: 4px solid #ff00ff;
-            box-shadow: 0 0 20px #ff00ff, inset 0 0 30px rgba(255, 0, 255, 0.3);
-            background: radial-gradient(ellipse at center, #1a2845 0%, #0d1520 60%, #000000 100%);
+            width: 960px;
+            height: 720px;
+            border: 8px solid #3d2817;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.5);
+            background: #000;
             overflow: hidden;
         }
 
         canvas {
-            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
             image-rendering: auto;
         }
 
-        #stars {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-
-        #gameCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 2;
-        }
-
-        #effectsCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 3;
-            pointer-events: none;
-        }
+        #bgCanvas { z-index: 1; }
+        #gameCanvas { z-index: 2; }
+        #fxCanvas { z-index: 3; pointer-events: none; }
 
         #ui {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 20px;
+            left: 20px;
             z-index: 4;
-            color: #ffee88;
-            font-size: 14px;
+            color: #fff;
+            font-size: 16px;
             font-weight: bold;
-            text-shadow: 3px 3px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 0 0 10px #ffaa00;
-            font-family: 'Press Start 2P', cursive;
+            text-shadow: 4px 4px 0px #000, -2px -2px 0px #000;
+            font-family: 'Courier New', monospace;
+            line-height: 1.8;
         }
 
-        #gameOver {
+        .hp-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .hp-heart {
+            width: 24px;
+            height: 24px;
+            background: #ff3333;
+            border: 3px solid #000;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .hp-heart::before {
+            content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 4;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 30px;
-            border: 4px solid #ff0000;
-            box-shadow: 0 0 20px #ff0000;
-            text-align: center;
-            color: #ff0000;
-            display: none;
+            top: 2px;
+            left: 2px;
+            width: 8px;
+            height: 8px;
+            background: #ffaaaa;
+            border-radius: 50%;
         }
 
-        #gameOver h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            animation: blink 1s infinite;
-        }
-
-        #gameOver p {
-            font-size: 12px;
-            margin: 10px 0;
-            color: #00ff00;
-        }
-
-        #gameOver button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #00ff00;
-            border: none;
-            color: #000;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 10px #00ff00;
-        }
-
-        #gameOver button:hover {
-            background: #00cc00;
-            transform: scale(1.05);
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
-        #startScreen {
+        #gameOver, #startScreen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 5;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: #00ff00;
-        }
-
-        #startScreen h1 {
-            font-size: 28px;
-            margin-bottom: 30px;
-            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 3px 3px 6px #000;
-            animation: pulse 2s infinite, gradient 3s ease infinite;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        #startScreen .instructions {
-            font-size: 10px;
-            margin: 10px 0;
-            color: #ffff00;
-        }
-
-        #startScreen button {
-            margin-top: 30px;
-            padding: 15px 30px;
-            background: #ff00ff;
-            border: 3px solid #00ffff;
             color: #fff;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 12px;
-            cursor: pointer;
-            box-shadow: 0 0 15px #ff00ff;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        #gameOver {
+            display: none;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 30px;
+            color: #ffdd44;
+            text-shadow: 6px 6px 0px #000, -2px -2px 0px #cc8800;
+            animation: wobble 2s infinite;
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(-2deg) scale(1); }
+            25% { transform: rotate(2deg) scale(1.05); }
+            50% { transform: rotate(-1deg) scale(1); }
+            75% { transform: rotate(1deg) scale(1.05); }
+        }
+
+        .instructions {
+            font-size: 14px;
+            margin: 8px 0;
+            color: #ffeecc;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        button {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: #ffdd44;
+            border: 5px solid #000;
+            color: #000;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: none;
+            box-shadow: 5px 5px 0px #aa8800;
+            transition: all 0.1s;
+        }
+
+        button:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 3px 3px 0px #aa8800;
+        }
+
+        button:active {
+            transform: translate(5px, 5px);
+            box-shadow: 0px 0px 0px #aa8800;
+        }
+
+        #finalScore {
+            color: #ffdd44;
+            font-size: 24px;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div id="gameContainer">
-        <canvas id="stars" width="800" height="600"></canvas>
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
-        <canvas id="effectsCanvas" width="800" height="600"></canvas>
+        <canvas id="bgCanvas" width="960" height="720"></canvas>
+        <canvas id="gameCanvas" width="960" height="720"></canvas>
+        <canvas id="fxCanvas" width="960" height="720"></canvas>
 
         <div id="ui">
             <div>PUNTOS: <span id="score">0</span></div>
-            <div>VIDAS: <span id="lives">3</span></div>
-            <div>NIVEL: <span id="level">1</span></div>
+            <div class="hp-container" id="hpContainer"></div>
+            <div style="margin-top: 8px;">NIVEL: <span id="level">1</span></div>
         </div>
 
         <div id="gameOver">
-            <h1>GAME OVER</h1>
-            <p>PUNTOS FINALES: <span id="finalScore">0</span></p>
-            <button onclick="restartGame()">REINICIAR</button>
+            <h1>¡JUEGO TERMINADO!</h1>
+            <div id="finalScore">PUNTOS: 0</div>
+            <button onclick="restartGame()">REINTENTAR</button>
         </div>
 
         <div id="startScreen">
-            <h1>🚀 SIMI INVADERS 🚀</h1>
+            <h1>SIMI INVADERS</h1>
             <div class="instructions">← → MOVER</div>
             <div class="instructions">ESPACIO DISPARAR</div>
             <div class="instructions">P PAUSAR</div>
-            <button onclick="startGame()">INICIAR JUEGO</button>
+            <button onclick="startGame()">¡COMENZAR!</button>
         </div>
     </div>
 
     <script>
+        // Canvas setup
+        const bgCanvas = document.getElementById('bgCanvas');
+        const bgCtx = bgCanvas.getContext('2d');
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const starsCanvas = document.getElementById('stars');
-        const starsCtx = starsCanvas.getContext('2d');
-        const effectsCanvas = document.getElementById('effectsCanvas');
-        const effectsCtx = effectsCanvas.getContext('2d');
+        const fxCanvas = document.getElementById('fxCanvas');
+        const fxCtx = fxCanvas.getContext('2d');
 
         // Game state
         let gameStarted = false;
         let gameRunning = false;
         let score = 0;
-        let lives = 3;
+        let hp = 3;
         let level = 1;
         let animationId;
+        let frameCount = 0;
 
-        // Player
+        // Player (Astronauta Doctor Simi)
         const player = {
-            x: 400,
-            y: 520,
-            width: 40,
-            height: 40,
-            speed: 5,
-            color: '#ff6600'
+            x: 460,
+            y: 600,
+            width: 60,
+            height: 60,
+            speed: 6,
+            shootCooldown: 0
         };
 
-        // Bullets
+        // Bullets and enemies
         let bullets = [];
-        const bulletSpeed = 7;
-
-        // Enemies
         let enemies = [];
         let enemyBullets = [];
-        const enemyTypes = [
-            { name: 'planeta', color: '#ffaa00', points: 10, width: 30, height: 30 },
-            { name: 'ufo', color: '#00ff88', points: 20, width: 35, height: 25 },
-            { name: 'alien', color: '#ffff00', points: 15, width: 28, height: 28 },
-            { name: 'satelite', color: '#00aaff', points: 25, width: 32, height: 32 }
-        ];
+        let particles = [];
+        let explosions = [];
 
         // Controls
         const keys = {};
 
-        // Cuphead-style effects
-        let particles = [];
-        let filmGrainIntensity = 0.15;
-        let filmFlicker = 0;
-        let bounceAnimations = new Map(); // Para animaciones de bounce
+        // Background elements
+        let bgClouds = [];
+        let bgStars = [];
+        let bgMountains = [];
 
-        // Stars background
-        const stars = [];
-        for (let i = 0; i < 100; i++) {
-            stars.push({
-                x: Math.random() * starsCanvas.width,
-                y: Math.random() * starsCanvas.height,
-                size: Math.random() * 2,
-                speed: Math.random() * 0.5 + 0.1
+        // Initialize background
+        function initBackground() {
+            // Create stars
+            for (let i = 0; i < 80; i++) {
+                bgStars.push({
+                    x: Math.random() * bgCanvas.width,
+                    y: Math.random() * bgCanvas.height * 0.6,
+                    size: Math.random() * 2 + 0.5,
+                    twinkle: Math.random() * Math.PI * 2,
+                    speed: Math.random() * 0.3 + 0.1
+                });
+            }
+
+            // Create clouds
+            for (let i = 0; i < 12; i++) {
+                bgClouds.push({
+                    x: Math.random() * bgCanvas.width,
+                    y: Math.random() * 200 + 50,
+                    width: Math.random() * 150 + 80,
+                    height: Math.random() * 60 + 30,
+                    speed: Math.random() * 0.3 + 0.1,
+                    opacity: Math.random() * 0.3 + 0.2
+                });
+            }
+
+            // Create mountain layers
+            for (let layer = 0; layer < 3; layer++) {
+                bgMountains[layer] = [];
+                const points = 15;
+                for (let i = 0; i <= points; i++) {
+                    bgMountains[layer].push({
+                        x: (i / points) * bgCanvas.width,
+                        y: 400 + Math.random() * 100 - layer * 30,
+                        baseY: 720
+                    });
+                }
+            }
+        }
+
+        // Draw painted background (Cuphead style)
+        function drawBackground() {
+            // Sky gradient (vintage pinkish-purple like Cuphead)
+            const skyGradient = bgCtx.createLinearGradient(0, 0, 0, bgCanvas.height * 0.6);
+            skyGradient.addColorStop(0, '#4a2c5e');      // Deep purple top
+            skyGradient.addColorStop(0.3, '#6b3d6d');    // Purple-pink
+            skyGradient.addColorStop(0.5, '#8d5474');    // Mauve
+            skyGradient.addColorStop(0.7, '#b06d7a');    // Dusty rose
+            skyGradient.addColorStop(1, '#d4917e');      // Peachy horizon
+
+            bgCtx.fillStyle = skyGradient;
+            bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+            // Add texture to sky
+            bgCtx.globalAlpha = 0.03;
+            for (let i = 0; i < 2000; i++) {
+                bgCtx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000';
+                bgCtx.fillRect(
+                    Math.random() * bgCanvas.width,
+                    Math.random() * bgCanvas.height * 0.6,
+                    1, 1
+                );
+            }
+            bgCtx.globalAlpha = 1;
+
+            // Twinkling stars
+            bgStars.forEach(star => {
+                star.twinkle += 0.05;
+                const brightness = (Math.sin(star.twinkle) + 1) / 2;
+                bgCtx.fillStyle = `rgba(255, 255, 255, ${brightness * 0.8})`;
+                bgCtx.beginPath();
+                bgCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                bgCtx.fill();
+
+                // Star glow
+                const glowGrad = bgCtx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.size * 3);
+                glowGrad.addColorStop(0, `rgba(255, 255, 200, ${brightness * 0.4})`);
+                glowGrad.addColorStop(1, 'rgba(255, 255, 200, 0)');
+                bgCtx.fillStyle = glowGrad;
+                bgCtx.beginPath();
+                bgCtx.arc(star.x, star.y, star.size * 3, 0, Math.PI * 2);
+                bgCtx.fill();
+
+                star.y += star.speed;
+                if (star.y > bgCanvas.height * 0.6) {
+                    star.y = 0;
+                    star.x = Math.random() * bgCanvas.width;
+                }
+            });
+
+            // Painted clouds (Cuphead style - organic shapes)
+            bgClouds.forEach(cloud => {
+                bgCtx.save();
+                bgCtx.globalAlpha = cloud.opacity;
+
+                // Dark purple clouds
+                bgCtx.fillStyle = '#2d1b3d';
+                bgCtx.strokeStyle = '#1a0f28';
+                bgCtx.lineWidth = 2;
+                bgCtx.lineJoin = 'round';
+
+                bgCtx.beginPath();
+                const segments = 8;
+                for (let i = 0; i <= segments; i++) {
+                    const angle = (i / segments) * Math.PI;
+                    const wobble = Math.sin(frameCount * 0.01 + i) * 5;
+                    const x = cloud.x + Math.cos(angle) * cloud.width / 2 + wobble;
+                    const y = cloud.y + Math.sin(angle) * cloud.height / 2;
+
+                    if (i === 0) bgCtx.moveTo(x, y);
+                    else bgCtx.lineTo(x, y);
+                }
+                bgCtx.closePath();
+                bgCtx.fill();
+                bgCtx.stroke();
+
+                // Add texture to clouds
+                bgCtx.globalAlpha = cloud.opacity * 0.3;
+                for (let i = 0; i < 30; i++) {
+                    bgCtx.fillStyle = '#1a0f28';
+                    const px = cloud.x + (Math.random() - 0.5) * cloud.width;
+                    const py = cloud.y + (Math.random() - 0.5) * cloud.height;
+                    bgCtx.fillRect(px, py, 2, 2);
+                }
+
+                bgCtx.restore();
+
+                cloud.x -= cloud.speed;
+                if (cloud.x < -cloud.width) {
+                    cloud.x = bgCanvas.width + cloud.width;
+                    cloud.y = Math.random() * 200 + 50;
+                }
+            });
+
+            // Ground/space terrain (layered mountains - Cuphead style)
+            bgMountains.forEach((layer, layerIndex) => {
+                const darkness = 0.3 + layerIndex * 0.15;
+                const hue = 280 - layerIndex * 20; // Purple to brown gradient
+
+                bgCtx.fillStyle = `hsl(${hue}, 30%, ${darkness * 100}%)`;
+                bgCtx.strokeStyle = `hsl(${hue}, 30%, ${(darkness - 0.1) * 100}%)`;
+                bgCtx.lineWidth = 3;
+                bgCtx.lineJoin = 'round';
+
+                bgCtx.beginPath();
+                bgCtx.moveTo(0, bgCanvas.height);
+
+                layer.forEach((point, i) => {
+                    const wobble = Math.sin(frameCount * 0.005 + i) * 3;
+                    if (i === 0) {
+                        bgCtx.lineTo(point.x, point.y + wobble);
+                    } else {
+                        const prevPoint = layer[i - 1];
+                        const cpX = (prevPoint.x + point.x) / 2;
+                        const cpY = Math.min(prevPoint.y, point.y) - 20;
+                        bgCtx.quadraticCurveTo(cpX, cpY + wobble, point.x, point.y + wobble);
+                    }
+                });
+
+                bgCtx.lineTo(bgCanvas.width, bgCanvas.height);
+                bgCtx.closePath();
+                bgCtx.fill();
+                bgCtx.stroke();
+
+                // Add rocky texture
+                bgCtx.save();
+                bgCtx.clip();
+                bgCtx.globalAlpha = 0.2;
+                for (let i = 0; i < 100; i++) {
+                    bgCtx.fillStyle = Math.random() > 0.5 ? '#000' : '#fff';
+                    const px = Math.random() * bgCanvas.width;
+                    const py = Math.random() * 300 + 420;
+                    bgCtx.fillRect(px, py, Math.random() * 3 + 1, Math.random() * 3 + 1);
+                }
+                bgCtx.restore();
             });
         }
 
-        // Cuphead-style particle system
-        function createParticles(x, y, color, count = 10) {
-            for (let i = 0; i < count; i++) {
+        // Helper: Thick cartoon outlines
+        function outlineStroke(thickness = 4) {
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = thickness;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+
+        // Draw player (Astronaut from mural - Cuphead style)
+        function drawPlayer() {
+            const px = player.x + player.width / 2;
+            const py = player.y + player.height / 2;
+
+            // Animation values
+            const bounce = Math.sin(frameCount * 0.08) * 4;
+            const squash = 1 + Math.sin(frameCount * 0.12) * 0.08;
+            const armSwing = Math.sin(frameCount * 0.1) * 0.3;
+
+            ctx.save();
+            ctx.translate(0, bounce);
+
+            // Jetpack flames (behind)
+            if (frameCount % 4 < 2) {
+                ctx.fillStyle = '#ff6600';
+                ctx.beginPath();
+                ctx.ellipse(px - 8, py + 22, 6, 12, 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffdd00';
+                ctx.beginPath();
+                ctx.ellipse(px - 8, py + 20, 4, 8, 0.3, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#ff6600';
+                ctx.beginPath();
+                ctx.ellipse(px + 8, py + 22, 6, 12, -0.3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffdd00';
+                ctx.beginPath();
+                ctx.ellipse(px + 8, py + 20, 4, 8, -0.3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Body (orange spacesuit - squash and stretch)
+            ctx.save();
+            ctx.translate(px, py);
+            ctx.scale(1, squash);
+            ctx.translate(-px, -py);
+
+            ctx.beginPath();
+            ctx.ellipse(px, py + 5, 16, 20, 0, 0, Math.PI * 2);
+            outlineStroke(5);
+            const bodyGrad = ctx.createRadialGradient(px - 5, py, 5, px, py + 5, 20);
+            bodyGrad.addColorStop(0, '#ff9944');
+            bodyGrad.addColorStop(1, '#ee7722');
+            ctx.fillStyle = bodyGrad;
+            ctx.fill();
+
+            ctx.restore();
+
+            // Rubber hose legs
+            const legBend = Math.sin(frameCount * 0.15) * 3;
+
+            // Left leg
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 7;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(px - 6, py + 20);
+            ctx.quadraticCurveTo(px - 10, py + 28 + legBend, px - 8, py + 38);
+            ctx.stroke();
+
+            // Right leg
+            ctx.beginPath();
+            ctx.moveTo(px + 6, py + 20);
+            ctx.quadraticCurveTo(px + 10, py + 28 - legBend, px + 8, py + 38);
+            ctx.stroke();
+
+            // Boots
+            ctx.beginPath();
+            ctx.ellipse(px - 8, py + 40, 7, 5, 0, 0, Math.PI * 2);
+            ctx.ellipse(px + 8, py + 40, 7, 5, 0, 0, Math.PI * 2);
+            outlineStroke(4);
+            ctx.fillStyle = '#cc3322';
+            ctx.fill();
+
+            // Rubber hose arms
+            // Left arm (raised)
+            ctx.strokeStyle = '#ff7722';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(px - 14, py + 3);
+            ctx.quadraticCurveTo(px - 22 + armSwing * 10, py - 8, px - 18, py - 15);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.moveTo(px - 14, py + 3);
+            ctx.quadraticCurveTo(px - 22 + armSwing * 10, py - 8, px - 18, py - 15);
+            outlineStroke(3);
+
+            // Right arm
+            ctx.strokeStyle = '#ff7722';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(px + 14, py + 3);
+            ctx.quadraticCurveTo(px + 18 - armSwing * 5, py + 12, px + 16, py + 18);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.moveTo(px + 14, py + 3);
+            ctx.quadraticCurveTo(px + 18 - armSwing * 5, py + 12, px + 16, py + 18);
+            outlineStroke(3);
+
+            // Gloves (huge white cartoon gloves!)
+            // Left glove (fist raised)
+            ctx.beginPath();
+            ctx.arc(px - 18, py - 18, 8, 0, Math.PI * 2);
+            outlineStroke(4);
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+
+            // Thumb
+            ctx.beginPath();
+            ctx.arc(px - 24, py - 14, 4, 0, Math.PI * 2);
+            outlineStroke(3);
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+
+            // Right glove (open hand)
+            ctx.beginPath();
+            ctx.ellipse(px + 16, py + 20, 7, 9, 0.2, 0, Math.PI * 2);
+            outlineStroke(4);
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+
+            // Fingers
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.arc(px + 13 + i * 3, py + 14, 3, 0, Math.PI * 2);
+                outlineStroke(2);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+            }
+
+            // Helmet (big round)
+            ctx.beginPath();
+            ctx.arc(px, py - 12, 18, 0, Math.PI * 2);
+            outlineStroke(6);
+            const helmetGrad = ctx.createRadialGradient(px - 8, py - 18, 5, px, py - 12, 18);
+            helmetGrad.addColorStop(0, '#ffcc77');
+            helmetGrad.addColorStop(1, '#dd9944');
+            ctx.fillStyle = helmetGrad;
+            ctx.fill();
+
+            // Helmet shine
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.beginPath();
+            ctx.arc(px - 6, py - 18, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Visor (glass window)
+            ctx.beginPath();
+            ctx.ellipse(px, py - 11, 13, 11, 0, 0, Math.PI * 2);
+            outlineStroke(4);
+            const visorGrad = ctx.createLinearGradient(px, py - 22, px, py);
+            visorGrad.addColorStop(0, 'rgba(120, 200, 255, 0.6)');
+            visorGrad.addColorStop(1, 'rgba(80, 150, 220, 0.3)');
+            ctx.fillStyle = visorGrad;
+            ctx.fill();
+
+            // Visor reflection
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.ellipse(px - 4, py - 16, 5, 3, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Face through visor
+            // Big cartoon eyes (pie eyes!)
+            const eyeBlink = (frameCount % 120 > 115) ? 4 : 0;
+
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.ellipse(px - 5, py - 12, 4, 5 - eyeBlink, 0, 0, Math.PI * 2);
+            ctx.ellipse(px + 5, py - 12, 4, 5 - eyeBlink, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pupils
+            if (eyeBlink === 0) {
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(px - 5, py - 11, 3, 0, Math.PI * 2);
+                ctx.arc(px + 5, py - 11, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Eye shine
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(px - 4, py - 13, 1.5, 0, Math.PI * 2);
+                ctx.arc(px + 6, py - 13, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Big smile
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(px, py - 6, 8, 0.2, Math.PI - 0.2);
+            ctx.stroke();
+
+            // Teeth
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(px, py - 6, 6.5, 0.2, Math.PI - 0.2);
+            ctx.lineTo(px, py - 6);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Enemy types (based on mural characters)
+        const enemyTypes = {
+            planet: {
+                name: 'planeta',
+                width: 50,
+                height: 50,
+                points: 100,
+                color: '#ffaa44',
+                shootChance: 0.003
+            },
+            ufo: {
+                name: 'ovni',
+                width: 55,
+                height: 45,
+                points: 150,
+                color: '#44ddaa',
+                shootChance: 0.005
+            },
+            alien: {
+                name: 'alien',
+                width: 48,
+                height: 48,
+                points: 125,
+                color: '#ffdd44',
+                shootChance: 0.004
+            },
+            satellite: {
+                name: 'satelite',
+                width: 52,
+                height: 52,
+                points: 175,
+                color: '#88ccff',
+                shootChance: 0.006
+            }
+        };
+
+        // Draw enemy
+        function drawEnemy(enemy) {
+            const type = enemy.type;
+            const ex = enemy.x + type.width / 2;
+            const ey = enemy.y + type.height / 2;
+
+            ctx.save();
+
+            if (type.name === 'planeta') {
+                // Saturn-like planet (from mural)
+                const wobble = Math.sin(frameCount * 0.04 + enemy.x) * 0.1;
+                const pulse = 1 + Math.sin(frameCount * 0.06 + enemy.x) * 0.05;
+
+                ctx.save();
+                ctx.translate(ex, ey);
+                ctx.scale(pulse, pulse);
+                ctx.rotate(wobble);
+                ctx.translate(-ex, -ey);
+
+                // Ring behind
+                ctx.beginPath();
+                ctx.ellipse(ex, ey, 28, 10, 0.2, 0, Math.PI * 2);
+                outlineStroke(4);
+                const ringGrad = ctx.createLinearGradient(ex - 28, ey, ex + 28, ey);
+                ringGrad.addColorStop(0, '#dd8833');
+                ringGrad.addColorStop(0.5, '#ffaa55');
+                ringGrad.addColorStop(1, '#dd8833');
+                ctx.fillStyle = ringGrad;
+                ctx.fill();
+
+                // Planet body
+                ctx.beginPath();
+                ctx.arc(ex, ey, 20, 0, Math.PI * 2);
+                outlineStroke(5);
+                const planetGrad = ctx.createRadialGradient(ex - 8, ey - 8, 5, ex, ey, 20);
+                planetGrad.addColorStop(0, '#ffcc66');
+                planetGrad.addColorStop(1, '#ee9933');
+                ctx.fillStyle = planetGrad;
+                ctx.fill();
+
+                // Ring in front (bottom half)
+                ctx.beginPath();
+                ctx.ellipse(ex, ey, 28, 10, 0.2, Math.PI, Math.PI * 2);
+                outlineStroke(4);
+                ctx.fillStyle = ringGrad;
+                ctx.fill();
+
+                ctx.restore();
+
+                // Happy face
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(ex - 6, ey - 4, 4, 0, Math.PI * 2);
+                ctx.arc(ex + 6, ey - 4, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Eye shine
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(ex - 5, ey - 6, 2, 0, Math.PI * 2);
+                ctx.arc(ex + 7, ey - 6, 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Smile
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(ex, ey + 4, 10, 0.2, Math.PI - 0.2);
+                ctx.stroke();
+
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(ex, ey + 4, 8, 0.2, Math.PI - 0.2);
+                ctx.lineTo(ex, ey + 4);
+                ctx.fill();
+
+                // Rosy cheeks
+                ctx.fillStyle = 'rgba(255, 150, 150, 0.6)';
+                ctx.beginPath();
+                ctx.arc(ex - 14, ey + 3, 4, 0, Math.PI * 2);
+                ctx.arc(ex + 14, ey + 3, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+            } else if (type.name === 'ovni') {
+                // UFO (green from mural)
+                const hover = Math.sin(frameCount * 0.05 + enemy.x) * 4;
+                const tilt = Math.sin(frameCount * 0.03 + enemy.x) * 0.1;
+
+                ctx.save();
+                ctx.translate(ex, ey + hover);
+                ctx.rotate(tilt);
+                ctx.translate(-ex, -(ey + hover));
+
+                // Light beam
+                if (frameCount % 8 < 5) {
+                    const beamGrad = ctx.createLinearGradient(ex, ey + hover + 12, ex, ey + hover + 35);
+                    beamGrad.addColorStop(0, 'rgba(255, 255, 100, 0.5)');
+                    beamGrad.addColorStop(1, 'rgba(255, 255, 100, 0)');
+                    ctx.fillStyle = beamGrad;
+                    ctx.beginPath();
+                    ctx.moveTo(ex - 8, ey + hover + 12);
+                    ctx.lineTo(ex - 16, ey + hover + 35);
+                    ctx.lineTo(ex + 16, ey + hover + 35);
+                    ctx.lineTo(ex + 8, ey + hover + 12);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+
+                // Saucer base
+                ctx.beginPath();
+                ctx.ellipse(ex, ey + hover + 8, 24, 9, 0, 0, Math.PI * 2);
+                outlineStroke(5);
+                const saucerGrad = ctx.createLinearGradient(ex, ey + hover, ex, ey + hover + 16);
+                saucerGrad.addColorStop(0, '#66ff99');
+                saucerGrad.addColorStop(1, '#22bb66');
+                ctx.fillStyle = saucerGrad;
+                ctx.fill();
+
+                // Dome
+                ctx.beginPath();
+                ctx.arc(ex, ey + hover, 14, Math.PI, 0, false);
+                ctx.closePath();
+                outlineStroke(5);
+                const domeGrad = ctx.createRadialGradient(ex - 5, ey + hover - 8, 3, ex, ey + hover, 14);
+                domeGrad.addColorStop(0, '#aaffcc');
+                domeGrad.addColorStop(1, '#66dd99');
+                ctx.fillStyle = domeGrad;
+                ctx.fill();
+
+                // Dome highlight
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.beginPath();
+                ctx.arc(ex - 5, ey + hover - 6, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Windows
+                ctx.fillStyle = '#003322';
+                ctx.beginPath();
+                ctx.arc(ex - 7, ey + hover + 2, 3, 0, Math.PI * 2);
+                ctx.arc(ex, ey + hover + 2, 3, 0, Math.PI * 2);
+                ctx.arc(ex + 7, ey + hover + 2, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Light circles
+                const lightColors = ['#ff6666', '#66ff66', '#6666ff'];
+                ctx.fillStyle = lightColors[frameCount % 3];
+                ctx.beginPath();
+                ctx.arc(ex, ey + hover + 12, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+
+            } else if (type.name === 'alien') {
+                // One-eyed alien (yellow from mural)
+                const pulse = 1 + Math.sin(frameCount * 0.07 + enemy.x) * 0.12;
+                const bob = Math.sin(frameCount * 0.06 + enemy.x) * 3;
+
+                ctx.save();
+                ctx.translate(ex, ey + bob);
+                ctx.scale(pulse, 1 / pulse);
+                ctx.translate(-ex, -(ey + bob));
+
+                // Body
+                ctx.beginPath();
+                ctx.arc(ex, ey + bob, 20, 0, Math.PI * 2);
+                outlineStroke(5);
+                const alienGrad = ctx.createRadialGradient(ex - 8, ey + bob - 8, 5, ex, ey + bob, 20);
+                alienGrad.addColorStop(0, '#ffee77');
+                alienGrad.addColorStop(1, '#ffbb33');
+                ctx.fillStyle = alienGrad;
+                ctx.fill();
+
+                ctx.restore();
+
+                // Antenna
+                const antennaWobble = Math.sin(frameCount * 0.12 + enemy.x) * 0.4;
+                ctx.strokeStyle = '#ffaa00';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(ex, ey - 20 + bob);
+                ctx.quadraticCurveTo(ex + antennaWobble * 8, ey - 28 + bob, ex, ey - 32 + bob);
+                ctx.stroke();
+
+                outlineStroke(2);
+
+                // Antenna ball
+                ctx.beginPath();
+                ctx.arc(ex, ey - 32 + bob, 4, 0, Math.PI * 2);
+                outlineStroke(3);
+                const ballGrad = ctx.createRadialGradient(ex - 2, ey - 34 + bob, 1, ex, ey - 32 + bob, 4);
+                ballGrad.addColorStop(0, '#ffcc66');
+                ballGrad.addColorStop(1, '#ff8800');
+                ctx.fillStyle = ballGrad;
+                ctx.fill();
+
+                // Big eye
+                ctx.beginPath();
+                ctx.arc(ex, ey + bob, 13, 0, Math.PI * 2);
+                outlineStroke(4);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+
+                // Iris
+                const irisGrad = ctx.createRadialGradient(ex - 3, ey - 3 + bob, 2, ex, ey + bob, 9);
+                irisGrad.addColorStop(0, '#66bbff');
+                irisGrad.addColorStop(1, '#2288dd');
+                ctx.fillStyle = irisGrad;
+                ctx.beginPath();
+                ctx.arc(ex, ey + bob, 9, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Pupil
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(ex + 2, ey + 2 + bob, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Eye shine
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(ex - 3, ey - 3 + bob, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Mouth
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(ex, ey + 14 + bob, 5, 0.3, Math.PI - 0.3);
+                ctx.stroke();
+
+            } else if (type.name === 'satelite') {
+                // Satellite (blue/silver)
+                const spin = Math.sin(frameCount * 0.05 + enemy.x) * 0.15;
+                const float = Math.sin(frameCount * 0.04 + enemy.x) * 3;
+
+                // Solar panels
+                ctx.save();
+                ctx.translate(ex - 18, ey + float);
+                ctx.rotate(spin);
+                ctx.translate(-(ex - 18), -(ey + float));
+
+                ctx.beginPath();
+                ctx.rect(ex - 28, ey - 10 + float, 14, 20);
+                outlineStroke(5);
+                const panelGrad = ctx.createLinearGradient(ex - 28, ey - 10 + float, ex - 28, ey + 10 + float);
+                panelGrad.addColorStop(0, '#5599ff');
+                panelGrad.addColorStop(0.5, '#3377dd');
+                panelGrad.addColorStop(1, '#5599ff');
+                ctx.fillStyle = panelGrad;
+                ctx.fill();
+
+                // Panel lines
+                ctx.strokeStyle = '#1155aa';
+                ctx.lineWidth = 2;
+                for (let i = 0; i < 3; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(ex - 28 + i * 5, ey - 10 + float);
+                    ctx.lineTo(ex - 28 + i * 5, ey + 10 + float);
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+
+                // Right panel
+                ctx.save();
+                ctx.translate(ex + 18, ey + float);
+                ctx.rotate(-spin);
+                ctx.translate(-(ex + 18), -(ey + float));
+
+                ctx.beginPath();
+                ctx.rect(ex + 14, ey - 10 + float, 14, 20);
+                outlineStroke(5);
+                ctx.fillStyle = panelGrad;
+                ctx.fill();
+
+                ctx.strokeStyle = '#1155aa';
+                ctx.lineWidth = 2;
+                for (let i = 0; i < 3; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(ex + 14 + i * 5, ey - 10 + float);
+                    ctx.lineTo(ex + 14 + i * 5, ey + 10 + float);
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+
+                // Main body
+                ctx.beginPath();
+                ctx.roundRect(ex - 10, ey - 14 + float, 20, 28, 4);
+                outlineStroke(5);
+                const bodyGrad = ctx.createLinearGradient(ex - 10, ey - 14 + float, ex + 10, ey + 14 + float);
+                bodyGrad.addColorStop(0, '#d0e0f0');
+                bodyGrad.addColorStop(0.5, '#a0c0d0');
+                bodyGrad.addColorStop(1, '#d0e0f0');
+                ctx.fillStyle = bodyGrad;
+                ctx.fill();
+
+                // Body highlight
+                ctx.fillStyle = '#fff';
+                ctx.globalAlpha = 0.6;
+                ctx.beginPath();
+                ctx.roundRect(ex - 8, ey - 12 + float, 6, 20, 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+
+                // Antenna
+                const antennaWobble = Math.sin(frameCount * 0.08 + enemy.x) * 0.3;
+                ctx.strokeStyle = '#888';
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(ex, ey - 14 + float);
+                ctx.quadraticCurveTo(ex + antennaWobble * 6, ey - 22 + float, ex, ey - 26 + float);
+                ctx.stroke();
+                outlineStroke(3);
+
+                // Antenna dish
+                ctx.beginPath();
+                ctx.arc(ex, ey - 26 + float, 5, 0, Math.PI * 2);
+                outlineStroke(4);
+                const dishGrad = ctx.createRadialGradient(ex - 2, ey - 28 + float, 1, ex, ey - 26 + float, 5);
+                dishGrad.addColorStop(0, '#ffffcc');
+                dishGrad.addColorStop(1, '#ffcc77');
+                ctx.fillStyle = dishGrad;
+                ctx.fill();
+
+                // Blinking light
+                if (frameCount % 6 < 2) {
+                    ctx.beginPath();
+                    ctx.arc(ex, ey + float, 4, 0, Math.PI * 2);
+                    outlineStroke(3);
+                    ctx.fillStyle = '#ff3333';
+                    ctx.fill();
+
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath();
+                    ctx.arc(ex - 1, ey - 1 + float, 2, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Glow
+                    const glowGrad = ctx.createRadialGradient(ex, ey + float, 2, ex, ey + float, 8);
+                    glowGrad.addColorStop(0, 'rgba(255, 50, 50, 0.8)');
+                    glowGrad.addColorStop(1, 'rgba(255, 50, 50, 0)');
+                    ctx.fillStyle = glowGrad;
+                    ctx.beginPath();
+                    ctx.arc(ex, ey + float, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Eyes
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(ex - 4, ey - 3 + float, 2, 0, Math.PI * 2);
+                ctx.arc(ex + 4, ey - 3 + float, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.restore();
+        }
+
+        // Bullet drawing
+        function drawBullet(bullet) {
+            ctx.save();
+
+            // Glow
+            const glowGrad = ctx.createRadialGradient(bullet.x, bullet.y, 0, bullet.x, bullet.y, 12);
+            glowGrad.addColorStop(0, 'rgba(100, 200, 255, 0.8)');
+            glowGrad.addColorStop(1, 'rgba(100, 200, 255, 0)');
+            ctx.fillStyle = glowGrad;
+            ctx.beginPath();
+            ctx.arc(bullet.x, bullet.y, 12, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Bullet core
+            ctx.beginPath();
+            ctx.arc(bullet.x, bullet.y, 5, 0, Math.PI * 2);
+            outlineStroke(3);
+            const bulletGrad = ctx.createRadialGradient(bullet.x - 2, bullet.y - 2, 1, bullet.x, bullet.y, 5);
+            bulletGrad.addColorStop(0, '#ffffff');
+            bulletGrad.addColorStop(0.3, '#aaffff');
+            bulletGrad.addColorStop(1, '#00ccff');
+            ctx.fillStyle = bulletGrad;
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Enemy bullet
+        function drawEnemyBullet(bullet) {
+            ctx.save();
+
+            // Glow
+            const glowGrad = ctx.createRadialGradient(bullet.x, bullet.y, 0, bullet.x, bullet.y, 10);
+            glowGrad.addColorStop(0, 'rgba(255, 100, 50, 0.8)');
+            glowGrad.addColorStop(1, 'rgba(255, 100, 50, 0)');
+            ctx.fillStyle = glowGrad;
+            ctx.beginPath();
+            ctx.arc(bullet.x, bullet.y, 10, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Bullet
+            ctx.beginPath();
+            ctx.arc(bullet.x, bullet.y, 4, 0, Math.PI * 2);
+            outlineStroke(2);
+            const bulletGrad = ctx.createRadialGradient(bullet.x - 1, bullet.y - 1, 1, bullet.x, bullet.y, 4);
+            bulletGrad.addColorStop(0, '#ffff88');
+            bulletGrad.addColorStop(0.5, '#ff8844');
+            bulletGrad.addColorStop(1, '#ff3333');
+            ctx.fillStyle = bulletGrad;
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Particle system
+        function createExplosion(x, y, color) {
+            for (let i = 0; i < 20; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 5 + 2;
                 particles.push({
                     x: x,
                     y: y,
-                    vx: (Math.random() - 0.5) * 6,
-                    vy: (Math.random() - 0.5) * 6 - 2,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 1,
+                    life: 1,
+                    decay: Math.random() * 0.02 + 0.01,
                     size: Math.random() * 4 + 2,
                     color: color,
-                    life: 1.0,
-                    decay: Math.random() * 0.02 + 0.01,
                     rotation: Math.random() * Math.PI * 2,
-                    rotationSpeed: (Math.random() - 0.5) * 0.3
+                    rotSpeed: (Math.random() - 0.5) * 0.3
                 });
             }
         }
@@ -289,20 +1101,22 @@
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
-                p.vy += 0.3; // gravity
+                p.vy += 0.2; // gravity
                 p.life -= p.decay;
-                p.rotation += p.rotationSpeed;
+                p.rotation += p.rotSpeed;
 
                 ctx.save();
                 ctx.globalAlpha = p.life;
                 ctx.translate(p.x, p.y);
                 ctx.rotate(p.rotation);
 
-                // Star-shaped particle (Cuphead style)
+                // Star particle
                 ctx.fillStyle = p.color;
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
                 ctx.beginPath();
                 for (let i = 0; i < 5; i++) {
-                    const angle = (i * 4 * Math.PI) / 5;
+                    const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
                     const radius = i % 2 === 0 ? p.size : p.size / 2;
                     const px = Math.cos(angle) * radius;
                     const py = Math.sin(angle) * radius;
@@ -311,713 +1125,26 @@
                 }
                 ctx.closePath();
                 ctx.fill();
-
-                // Black outline
-                ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 1;
                 ctx.stroke();
 
                 ctx.restore();
             });
         }
 
-        // Film grain effect
-        function drawFilmGrain() {
-            const imageData = effectsCtx.createImageData(effectsCanvas.width, effectsCanvas.height);
-            const data = imageData.data;
-
-            for (let i = 0; i < data.length; i += 4) {
-                const noise = (Math.random() - 0.5) * 255 * filmGrainIntensity;
-                data[i] = noise;     // R
-                data[i + 1] = noise; // G
-                data[i + 2] = noise; // B
-                data[i + 3] = Math.abs(noise) * 0.5; // A
-            }
-
-            effectsCtx.putImageData(imageData, 0, 0);
-        }
-
-        // Vignette effect
-        function drawVignette() {
-            const gradient = effectsCtx.createRadialGradient(
-                effectsCanvas.width / 2, effectsCanvas.height / 2, 100,
-                effectsCanvas.width / 2, effectsCanvas.height / 2, effectsCanvas.width * 0.8
-            );
-            gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-            gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.1)');
-            gradient.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
-
-            effectsCtx.fillStyle = gradient;
-            effectsCtx.fillRect(0, 0, effectsCanvas.width, effectsCanvas.height);
-        }
-
-        // Film flicker effect
-        function drawFilmFlicker() {
-            filmFlicker = Math.sin(Date.now() / 50) * 0.03 + (Math.random() - 0.5) * 0.02;
-            effectsCtx.globalAlpha = Math.abs(filmFlicker);
-            effectsCtx.fillStyle = Math.random() > 0.5 ? '#ffffff' : '#000000';
-            effectsCtx.fillRect(0, 0, effectsCanvas.width, effectsCanvas.height);
-            effectsCtx.globalAlpha = 1.0;
-        }
-
-        // Scan lines
-        function drawScanLines() {
-            effectsCtx.globalAlpha = 0.05;
-            effectsCtx.strokeStyle = '#000000';
-            effectsCtx.lineWidth = 1;
-            for (let i = 0; i < effectsCanvas.height; i += 3) {
-                effectsCtx.beginPath();
-                effectsCtx.moveTo(0, i);
-                effectsCtx.lineTo(effectsCanvas.width, i);
-                effectsCtx.stroke();
-            }
-            effectsCtx.globalAlpha = 1.0;
-        }
-
-        // Helper function to draw thick black outlines (Cuphead style)
-        function strokeOutline(path, lineWidth = 3) {
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = lineWidth;
-            ctx.lineJoin = 'round';
-            ctx.lineCap = 'round';
-            ctx.stroke();
-        }
-
-        // Main effects compositor
-        function drawCupheadEffects() {
-            effectsCtx.clearRect(0, 0, effectsCanvas.width, effectsCanvas.height);
-
-            // Layer effects
-            if (Math.random() > 0.97) {
-                drawFilmFlicker();
-            }
-
-            drawFilmGrain();
-            drawVignette();
-            drawScanLines();
-        }
-
-        function drawStars() {
-            starsCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            starsCtx.fillRect(0, 0, starsCanvas.width, starsCanvas.height);
-
-            stars.forEach(star => {
-                // Glow effect
-                const starGlow = starsCtx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.size * 2);
-                starGlow.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-                starGlow.addColorStop(0.5, 'rgba(255, 255, 255, 0.4)');
-                starGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
-                starsCtx.fillStyle = starGlow;
-                starsCtx.beginPath();
-                starsCtx.arc(star.x, star.y, star.size * 2, 0, Math.PI * 2);
-                starsCtx.fill();
-
-                // Star center
-                starsCtx.fillStyle = '#ffffff';
-                starsCtx.beginPath();
-                starsCtx.arc(star.x, star.y, star.size / 2, 0, Math.PI * 2);
-                starsCtx.fill();
-
-                star.y += star.speed;
-                if (star.y > starsCanvas.height) {
-                    star.y = 0;
-                    star.x = Math.random() * starsCanvas.width;
-                }
-            });
-        }
-
-        function drawPlayer() {
-            const centerX = player.x + player.width / 2;
-            const centerY = player.y + player.height / 2;
-
-            // Rubber hose animation - exaggerated bounce
-            const bounce = Math.sin(Date.now() / 150) * 3;
-            const squash = 1 + Math.sin(Date.now() / 100) * 0.1;
-            const armWave = Math.sin(Date.now() / 200);
-
-            ctx.save();
-            ctx.translate(0, bounce);
-
-            // ========== CUPHEAD STYLE ASTRONAUT (based on mural) ==========
-
-            // Jetpack fire behind (simplified)
-            const fireFrame = Math.sin(Date.now() / 80) * 3;
-            ctx.fillStyle = '#ff6600';
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY + 20);
-            ctx.quadraticCurveTo(centerX - 5, centerY + 25 + fireFrame, centerX - 3, centerY + 30 + fireFrame);
-            ctx.quadraticCurveTo(centerX, centerY + 28 + fireFrame, centerX + 3, centerY + 30 + fireFrame);
-            ctx.quadraticCurveTo(centerX + 5, centerY + 25 + fireFrame, centerX, centerY + 20);
-            ctx.fill();
-
-            ctx.fillStyle = '#ffdd00';
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY + 22);
-            ctx.quadraticCurveTo(centerX - 3, centerY + 24 + fireFrame, centerX, centerY + 27 + fireFrame);
-            ctx.quadraticCurveTo(centerX + 3, centerY + 24 + fireFrame, centerX, centerY + 22);
-            ctx.fill();
-
-            // Body - SIMPLE OVAL (orange suit from mural)
-            ctx.save();
-            ctx.translate(centerX, centerY + 5);
-            ctx.scale(1, squash);
-            ctx.translate(-centerX, -(centerY + 5));
-
-            ctx.beginPath();
-            ctx.ellipse(centerX, centerY + 5, 10, 14, 0, 0, Math.PI * 2);
-            strokeOutline(ctx, 5);
-            ctx.fillStyle = '#ff7722';
-            ctx.fill();
-
-            ctx.restore();
-
-            // Rubber hose LEGS (black tubes with orange boots)
-            // Left leg
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 5;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(centerX - 4, centerY + 16);
-            const legBend = Math.sin(Date.now() / 300) * 2;
-            ctx.quadraticCurveTo(centerX - 6, centerY + 22 + legBend, centerX - 5, centerY + 28);
-            ctx.stroke();
-
-            // Right leg
-            ctx.beginPath();
-            ctx.moveTo(centerX + 4, centerY + 16);
-            ctx.quadraticCurveTo(centerX + 6, centerY + 22 - legBend, centerX + 5, centerY + 28);
-            ctx.stroke();
-
-            // Boots (simplified, from mural)
-            ctx.beginPath();
-            ctx.ellipse(centerX - 5, centerY + 30, 5, 4, 0, 0, Math.PI * 2);
-            ctx.ellipse(centerX + 5, centerY + 30, 5, 4, 0, 0, Math.PI * 2);
-            strokeOutline(ctx, 3);
-            ctx.fillStyle = '#dd4422';
-            ctx.fill();
-
-            // Rubber hose ARMS (black tubes)
-            // Left arm RAISED UP (like in mural - victory pose!)
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 4;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(centerX - 10, centerY + 2);
-            ctx.quadraticCurveTo(centerX - 14 + armWave * 2, centerY - 3, centerX - 12, centerY - 8);
-            ctx.stroke();
-
-            // Right arm (down)
-            ctx.beginPath();
-            ctx.moveTo(centerX + 10, centerY + 2);
-            ctx.quadraticCurveTo(centerX + 12 - armWave, centerY + 8, centerX + 11, centerY + 12);
-            ctx.stroke();
-
-            // HUGE WHITE GLOVES (Cuphead style!)
-            // Left glove (raised - fist!)
-            ctx.beginPath();
-            ctx.arc(centerX - 12, centerY - 10, 6, 0, Math.PI * 2);
-            strokeOutline(ctx, 3);
-            ctx.fillStyle = '#ffffff';
-            ctx.fill();
-
-            // Thumb on fist
-            ctx.beginPath();
-            ctx.arc(centerX - 16, centerY - 8, 3, 0, Math.PI * 2);
-            strokeOutline(ctx, 2);
-            ctx.fillStyle = '#ffffff';
-            ctx.fill();
-
-            // Right glove (open hand)
-            ctx.beginPath();
-            ctx.ellipse(centerX + 11, centerY + 14, 5, 6, 0.3, 0, Math.PI * 2);
-            strokeOutline(ctx, 3);
-            ctx.fillStyle = '#ffffff';
-            ctx.fill();
-
-            // Fingers on open hand
-            for (let i = 0; i < 3; i++) {
-                ctx.beginPath();
-                ctx.arc(centerX + 9 + i * 2, centerY + 9, 2, 0, Math.PI * 2);
-                strokeOutline(ctx, 2);
-                ctx.fillStyle = '#ffffff';
-                ctx.fill();
-            }
-
-            // HEAD - BIG ROUND HELMET (orange like mural)
-            ctx.beginPath();
-            ctx.arc(centerX, centerY - 8, 12, 0, Math.PI * 2);
-            strokeOutline(ctx, 5);
-            ctx.fillStyle = '#ffaa44';
-            ctx.fill();
-
-            // Helmet shine (simple highlight)
-            ctx.fillStyle = '#ffdd88';
-            ctx.beginPath();
-            ctx.arc(centerX - 4, centerY - 13, 4, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Visor WINDOW (cyan/blue - visible face area)
-            ctx.beginPath();
-            ctx.ellipse(centerX, centerY - 7, 9, 8, 0, 0, Math.PI * 2);
-            strokeOutline(ctx, 3);
-            ctx.fillStyle = 'rgba(100, 200, 255, 0.3)';
-            ctx.fill();
-
-            // HUGE CARTOON EYES (Cuphead style pie eyes!)
-            const eyeBlink = Math.sin(Date.now() / 3000) > 0.95 ? 3 : 0;
-
-            // Left eye (black pie cut)
-            ctx.fillStyle = '#000000';
-            ctx.beginPath();
-            ctx.arc(centerX - 3, centerY - 8, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Right eye
-            ctx.beginPath();
-            ctx.arc(centerX + 3, centerY - 8, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-            // White shine in eyes (Cuphead signature!)
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(centerX - 2, centerY - 9, 1.5, 0, Math.PI * 2);
-            ctx.arc(centerX + 4, centerY - 9, 1.5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // GIANT SMILE (from mural - huge happy grin!)
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 2.5;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.arc(centerX, centerY - 3, 6, 0.1, Math.PI - 0.1);
-            ctx.stroke();
-
-            // Smile fill (white teeth showing)
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(centerX, centerY - 3, 5, 0.1, Math.PI - 0.1);
-            ctx.lineTo(centerX, centerY - 3);
-            ctx.fill();
-
-            // Tongue
-            ctx.fillStyle = '#ff6666';
-            ctx.beginPath();
-            ctx.ellipse(centerX, centerY + 1, 2, 1.5, 0, 0, Math.PI);
-            ctx.fill();
-
-            ctx.restore();
-        }
-
-        function drawBullet(bullet) {
-            ctx.save();
-
-            // Glow effect (outer)
-            const glowGradient = ctx.createRadialGradient(bullet.x + 2, bullet.y + 6, 0, bullet.x + 2, bullet.y + 6, 8);
-            glowGradient.addColorStop(0, 'rgba(0, 255, 255, 0.8)');
-            glowGradient.addColorStop(0.5, 'rgba(0, 255, 255, 0.3)');
-            glowGradient.addColorStop(1, 'rgba(0, 255, 255, 0)');
-            ctx.fillStyle = glowGradient;
-            ctx.fillRect(bullet.x - 4, bullet.y - 2, 12, 16);
-
-            // Laser beam with gradient
-            const laserGradient = ctx.createLinearGradient(bullet.x, bullet.y, bullet.x + 4, bullet.y);
-            laserGradient.addColorStop(0, 'rgba(0, 255, 255, 0.6)');
-            laserGradient.addColorStop(0.5, '#00ffff');
-            laserGradient.addColorStop(1, 'rgba(0, 255, 255, 0.6)');
-            ctx.fillStyle = laserGradient;
-            ctx.beginPath();
-            ctx.roundRect(bullet.x, bullet.y, 4, 12, 2);
-            ctx.fill();
-
-            // Inner bright core
-            const coreGradient = ctx.createLinearGradient(bullet.x + 1, bullet.y, bullet.x + 3, bullet.y);
-            coreGradient.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
-            coreGradient.addColorStop(0.5, '#ffffff');
-            coreGradient.addColorStop(1, 'rgba(255, 255, 255, 0.6)');
-            ctx.fillStyle = coreGradient;
-            ctx.fillRect(bullet.x + 1.5, bullet.y + 2, 1, 8);
-
-            ctx.restore();
-        }
-
-        function drawEnemy(enemy) {
-            const type = enemy.type;
-            const centerX = enemy.x + type.width / 2;
-            const centerY = enemy.y + type.height / 2;
-
-            ctx.save();
-
-            if (type.name === 'planeta') {
-                // SATURN PLANET - Cuphead style (from mural)
-                const wobble = Math.sin(Date.now() / 200 + centerX) * 1.5;
-                const bounce = Math.sin(Date.now() / 300 + centerX) * 2;
-
-                // Animated RING behind (wavy like rubber)
-                ctx.beginPath();
-                ctx.ellipse(centerX, centerY + bounce, 20, 6, wobble * 0.1, 0, Math.PI * 2);
-                strokeOutline(ctx, 4);
-
-                const ringGrad = ctx.createLinearGradient(centerX - 20, centerY, centerX + 20, centerY);
-                ringGrad.addColorStop(0, '#ff8844');
-                ringGrad.addColorStop(0.5, '#ffaa55');
-                ringGrad.addColorStop(1, '#ff8844');
-                ctx.fillStyle = ringGrad;
-                ctx.fill();
-
-                // PLANET BODY (simple circle - orange like mural)
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, 13, 0, Math.PI * 2);
-                strokeOutline(ctx, 5);
-                ctx.fillStyle = '#ffaa44';
-                ctx.fill();
-
-                // Ring in front (bottom half)
-                ctx.beginPath();
-                ctx.ellipse(centerX, centerY, 20, 6, wobble * 0.1, Math.PI, Math.PI * 2);
-                strokeOutline(ctx, 4);
-                ctx.fillStyle = ringGrad;
-                ctx.fill();
-
-                // HUGE HAPPY EYES (Cuphead pie eyes)
-                ctx.fillStyle = '#000000';
-                ctx.beginPath();
-                ctx.arc(centerX - 4, centerY - 3, 3.5, 0, Math.PI * 2);
-                ctx.arc(centerX + 4, centerY - 3, 3.5, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Eye whites (shine)
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(centerX - 3, centerY - 4, 1.5, 0, Math.PI * 2);
-                ctx.arc(centerX + 5, centerY - 4, 1.5, 0, Math.PI * 2);
-                ctx.fill();
-
-                // GIANT SMILE (like mural - super wide!)
-                ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 3;
-                ctx.lineCap = 'round';
-                ctx.beginPath();
-                ctx.arc(centerX, centerY + 3, 8, 0.2, Math.PI - 0.2);
-                ctx.stroke();
-
-                // Smile teeth
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(centerX, centerY + 3, 7, 0.2, Math.PI - 0.2);
-                ctx.lineTo(centerX, centerY + 3);
-                ctx.fill();
-
-                // Rosy CHEEKS (pink circles)
-                ctx.fillStyle = '#ff9999';
-                ctx.beginPath();
-                ctx.arc(centerX - 10, centerY + 2, 3, 0, Math.PI * 2);
-                ctx.arc(centerX + 10, centerY + 2, 3, 0, Math.PI * 2);
-                ctx.fill();
-
-            } else if (type.name === 'ufo') {
-                // UFO - Cuphead style (green from mural)
-                const hover = Math.sin(Date.now() / 250 + centerX) * 3;
-                const wobble = Math.sin(Date.now() / 200 + centerX) * 0.1;
-
-                // SAUCER BASE (simple ellipse - green)
-                ctx.beginPath();
-                ctx.ellipse(centerX, centerY + 5 + hover, 16, 6, wobble, 0, Math.PI * 2);
-                strokeOutline(ctx, 4);
-                ctx.fillStyle = '#00dd88';
-                ctx.fill();
-
-                // Saucer detail lines
-                ctx.strokeStyle = '#009966';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.ellipse(centerX, centerY + 5 + hover, 14, 5, wobble, 0, Math.PI * 2);
-                ctx.stroke();
-
-                // DOME (half circle on top - lighter green)
-                ctx.beginPath();
-                ctx.arc(centerX, centerY + hover, 9, Math.PI, 0, false);
-                ctx.closePath();
-                strokeOutline(ctx, 4);
-                ctx.fillStyle = '#88ffcc';
-                ctx.fill();
-
-                // Dome highlight
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-                ctx.beginPath();
-                ctx.arc(centerX - 3, centerY - 4 + hover, 3, 0, Math.PI * 2);
-                ctx.fill();
-
-                // WINDOWS (simple black circles)
-                ctx.fillStyle = '#004433';
-                ctx.beginPath();
-                ctx.arc(centerX - 5, centerY + 1 + hover, 2, 0, Math.PI * 2);
-                ctx.arc(centerX, centerY + 1 + hover, 2, 0, Math.PI * 2);
-                ctx.arc(centerX + 5, centerY + 1 + hover, 2, 0, Math.PI * 2);
-                ctx.fill();
-
-                // LIGHT BEAM (animated - simple triangles)
-                const blink = Math.floor(Date.now() / 150) % 4;
-                if (blink < 3) {
-                    ctx.fillStyle = 'rgba(255, 255, 0, 0.3)';
-                    ctx.beginPath();
-                    ctx.moveTo(centerX - 4, centerY + 10 + hover);
-                    ctx.lineTo(centerX - 8, centerY + 18 + hover);
-                    ctx.lineTo(centerX + 8, centerY + 18 + hover);
-                    ctx.lineTo(centerX + 4, centerY + 10 + hover);
-                    ctx.closePath();
-                    ctx.fill();
-
-                    // Light circles at bottom
-                    const colors = ['#ffff00', '#00ffff', '#ff00ff'];
-                    ctx.fillStyle = colors[blink];
-                    ctx.beginPath();
-                    ctx.arc(centerX - 6, centerY + 11 + hover, 3, 0, Math.PI * 2);
-                    ctx.arc(centerX, centerY + 11 + hover, 3, 0, Math.PI * 2);
-                    ctx.arc(centerX + 6, centerY + 11 + hover, 3, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-            } else if (type.name === 'alien') {
-                // ONE-EYED ALIEN - Cuphead style (yellow from mural!)
-                const pulse = 1 + Math.sin(Date.now() / 200 + centerX) * 0.12;
-                const bob = Math.sin(Date.now() / 400 + centerX) * 2;
-
-                // BODY (simple circle/blob - yellow)
-                ctx.save();
-                ctx.translate(centerX, centerY + bob);
-                ctx.scale(pulse, 1 / pulse); // Squash and stretch!
-                ctx.translate(-centerX, -(centerY + bob));
-
-                ctx.beginPath();
-                ctx.arc(centerX, centerY + bob, 14, 0, Math.PI * 2);
-                strokeOutline(ctx, 5);
-                ctx.fillStyle = '#ffdd33';
-                ctx.fill();
-
-                ctx.restore();
-
-                // Tiny ANTENNA on top (wobbles)
-                const antennaWobble = Math.sin(Date.now() / 150 + centerX) * 0.3;
-                ctx.strokeStyle = '#ffaa00';
-                ctx.lineWidth = 3;
-                ctx.lineCap = 'round';
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY - 14 + bob);
-                ctx.quadraticCurveTo(centerX + antennaWobble * 3, centerY - 18 + bob, centerX, centerY - 20 + bob);
-                ctx.stroke();
-
-                // Antenna ball
-                ctx.beginPath();
-                ctx.arc(centerX, centerY - 20 + bob, 3, 0, Math.PI * 2);
-                strokeOutline(ctx, 2);
-                ctx.fillStyle = '#ff8800';
-                ctx.fill();
-
-                // ONE MASSIVE EYE (like from mural!)
-                // Eye white
-                ctx.beginPath();
-                ctx.arc(centerX, centerY + bob, 9, 0, Math.PI * 2);
-                strokeOutline(ctx, 3);
-                ctx.fillStyle = '#ffffff';
-                ctx.fill();
-
-                // Iris (blue gradient)
-                ctx.beginPath();
-                ctx.arc(centerX, centerY + bob, 6, 0, Math.PI * 2);
-                const irisGrad = ctx.createRadialGradient(centerX - 2, centerY - 2 + bob, 1, centerX, centerY + bob, 6);
-                irisGrad.addColorStop(0, '#0099ff');
-                irisGrad.addColorStop(1, '#0055cc');
-                ctx.fillStyle = irisGrad;
-                ctx.fill();
-
-                // Black pupil
-                ctx.fillStyle = '#000000';
-                ctx.beginPath();
-                ctx.arc(centerX + 1, centerY + 1 + bob, 3, 0, Math.PI * 2);
-                ctx.fill();
-
-                // BIG shine (Cuphead signature!)
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(centerX - 2, centerY - 2 + bob, 2.5, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Tiny MOUTH (simple curve)
-                ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(centerX, centerY + 10 + bob, 4, 0.3, Math.PI - 0.3);
-                ctx.stroke();
-
-            } else if (type.name === 'satelite') {
-                // SATELLITE - Cuphead style (blue/silver from mural)
-                const spin = Math.sin(Date.now() / 400 + centerX) * 0.15;
-                const float = Math.sin(Date.now() / 350 + centerX) * 2;
-
-                // SOLAR PANELS (simple rectangles - blue)
-                // Left panel
-                ctx.save();
-                ctx.translate(centerX - 12, centerY + float);
-                ctx.rotate(spin);
-                ctx.translate(-(centerX - 12), -(centerY + float));
-
-                ctx.beginPath();
-                ctx.rect(centerX - 20, centerY - 6 + float, 10, 12);
-                strokeOutline(ctx, 4);
-                ctx.fillStyle = '#3399ff';
-                ctx.fill();
-
-                // Simple grid lines on panel
-                ctx.strokeStyle = '#0066cc';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(centerX - 15, centerY - 6 + float);
-                ctx.lineTo(centerX - 15, centerY + 6 + float);
-                ctx.stroke();
-
-                ctx.restore();
-
-                // Right panel
-                ctx.save();
-                ctx.translate(centerX + 12, centerY + float);
-                ctx.rotate(-spin);
-                ctx.translate(-(centerX + 12), -(centerY + float));
-
-                ctx.beginPath();
-                ctx.rect(centerX + 10, centerY - 6 + float, 10, 12);
-                strokeOutline(ctx, 4);
-                ctx.fillStyle = '#3399ff';
-                ctx.fill();
-
-                // Grid lines
-                ctx.strokeStyle = '#0066cc';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(centerX + 15, centerY - 6 + float);
-                ctx.lineTo(centerX + 15, centerY + 6 + float);
-                ctx.stroke();
-
-                ctx.restore();
-
-                // MAIN BODY (simple rounded rectangle - silver/gray)
-                ctx.beginPath();
-                ctx.roundRect(centerX - 6, centerY - 8 + float, 12, 16, 3);
-                strokeOutline(ctx, 5);
-                ctx.fillStyle = '#ccddee';
-                ctx.fill();
-
-                // Body highlight (simple stripe)
-                ctx.fillStyle = '#eeffff';
-                ctx.beginPath();
-                ctx.roundRect(centerX - 4, centerY - 6 + float, 3, 12, 1);
-                ctx.fill();
-
-                // Simple ANTENNA on top (wobbles)
-                const antennaWobble = Math.sin(Date.now() / 180 + centerX) * 0.2;
-                ctx.strokeStyle = '#888888';
-                ctx.lineWidth = 4;
-                ctx.lineCap = 'round';
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY - 8 + float);
-                ctx.quadraticCurveTo(centerX + antennaWobble * 4, centerY - 12 + float, centerX, centerY - 14 + float);
-                ctx.stroke();
-
-                // Antenna dish (simple circle)
-                ctx.beginPath();
-                ctx.arc(centerX, centerY - 14 + float, 4, 0, Math.PI * 2);
-                strokeOutline(ctx, 3);
-                ctx.fillStyle = '#ffdd88';
-                ctx.fill();
-
-                // BLINKING LIGHT (Cuphead style - center)
-                const blink = Math.floor(Date.now() / 250) % 3;
-                if (blink === 0) {
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY + float, 3, 0, Math.PI * 2);
-                    strokeOutline(ctx, 2);
-                    ctx.fillStyle = '#ff3333';
-                    ctx.fill();
-
-                    // White center shine
-                    ctx.fillStyle = '#ffffff';
-                    ctx.beginPath();
-                    ctx.arc(centerX - 1, centerY - 1 + float, 1, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                // SIMPLE FACE ELEMENTS (Cuphead style)
-                // Two small eyes (dots)
-                ctx.fillStyle = '#000000';
-                ctx.beginPath();
-                ctx.arc(centerX - 3, centerY - 2 + float, 1.5, 0, Math.PI * 2);
-                ctx.arc(centerX + 3, centerY - 2 + float, 1.5, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            ctx.restore();
-        }
-
-        function drawEnemyBullet(bullet) {
-            ctx.save();
-
-            // Outer glow
-            const glowGradient = ctx.createRadialGradient(bullet.x + 3, bullet.y + 4, 0, bullet.x + 3, bullet.y + 4, 10);
-            glowGradient.addColorStop(0, 'rgba(255, 100, 0, 0.6)');
-            glowGradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.3)');
-            glowGradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
-            ctx.fillStyle = glowGradient;
-            ctx.beginPath();
-            ctx.arc(bullet.x + 3, bullet.y + 4, 8, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Energy ball with gradient (red to yellow center)
-            const ballGradient = ctx.createRadialGradient(bullet.x + 3, bullet.y + 3, 1, bullet.x + 3, bullet.y + 4, 5);
-            ballGradient.addColorStop(0, '#ffff00');
-            ballGradient.addColorStop(0.4, '#ff8800');
-            ballGradient.addColorStop(0.7, '#ff3300');
-            ballGradient.addColorStop(1, '#cc0000');
-            ctx.fillStyle = ballGradient;
-            ctx.beginPath();
-            ctx.arc(bullet.x + 3, bullet.y + 4, 4, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Bright center
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            ctx.beginPath();
-            ctx.arc(bullet.x + 2, bullet.y + 3, 1.5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Flame trail
-            const trailGradient = ctx.createLinearGradient(bullet.x + 3, bullet.y + 8, bullet.x + 3, bullet.y + 12);
-            trailGradient.addColorStop(0, 'rgba(255, 100, 0, 0.6)');
-            trailGradient.addColorStop(0.5, 'rgba(255, 50, 0, 0.3)');
-            trailGradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
-            ctx.fillStyle = trailGradient;
-            ctx.beginPath();
-            ctx.moveTo(bullet.x + 3, bullet.y + 8);
-            ctx.lineTo(bullet.x + 1, bullet.y + 11);
-            ctx.lineTo(bullet.x + 5, bullet.y + 11);
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.restore();
-        }
-
+        // Create enemies
         function createEnemies() {
             enemies = [];
-            const rows = 3 + Math.floor(level / 2);
-            const cols = 6 + Math.floor(level / 3);
-            const spacing = 60;
-            const startX = 50;
-            const startY = 50;
+            const rows = Math.min(3 + Math.floor(level / 2), 5);
+            const cols = Math.min(5 + Math.floor(level / 2), 8);
+            const types = Object.values(enemyTypes);
 
-            for (let row = 0; row < Math.min(rows, 5); row++) {
-                for (let col = 0; col < Math.min(cols, 10); col++) {
-                    const typeIndex = Math.floor(Math.random() * enemyTypes.length);
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const type = types[Math.floor(Math.random() * types.length)];
                     enemies.push({
-                        x: startX + col * spacing,
-                        y: startY + row * 50,
-                        type: enemyTypes[typeIndex],
+                        x: 80 + col * 100,
+                        y: 60 + row * 70,
+                        type: type,
                         direction: 1,
                         shootCooldown: Math.random() * 100
                     });
@@ -1025,24 +1152,27 @@
             }
         }
 
+        // Game logic
         function updatePlayer() {
-            if (keys['ArrowLeft'] && player.x > 0) {
+            if (keys['ArrowLeft'] && player.x > 20) {
                 player.x -= player.speed;
             }
-            if (keys['ArrowRight'] && player.x < canvas.width - player.width) {
+            if (keys['ArrowRight'] && player.x < canvas.width - player.width - 20) {
                 player.x += player.speed;
             }
+
+            if (player.shootCooldown > 0) player.shootCooldown--;
         }
 
         function updateBullets() {
-            bullets = bullets.filter(bullet => {
-                bullet.y -= bulletSpeed;
-                return bullet.y > 0;
+            bullets = bullets.filter(b => {
+                b.y -= 8;
+                return b.y > -20;
             });
 
-            enemyBullets = enemyBullets.filter(bullet => {
-                bullet.y += 3;
-                return bullet.y < canvas.height;
+            enemyBullets = enemyBullets.filter(b => {
+                b.y += 5;
+                return b.y < canvas.height + 20;
             });
         }
 
@@ -1050,76 +1180,84 @@
             let changeDirection = false;
 
             enemies.forEach(enemy => {
-                enemy.x += enemy.direction * 0.5;
+                enemy.x += enemy.direction * 1;
 
-                if (enemy.x <= 0 || enemy.x >= canvas.width - enemy.type.width) {
+                if (enemy.x <= 20 || enemy.x >= canvas.width - enemy.type.width - 20) {
                     changeDirection = true;
                 }
 
-                // Enemy shooting
                 enemy.shootCooldown--;
-                if (enemy.shootCooldown <= 0 && Math.random() < 0.002) {
+                if (enemy.shootCooldown <= 0 && Math.random() < enemy.type.shootChance) {
                     enemyBullets.push({
                         x: enemy.x + enemy.type.width / 2,
                         y: enemy.y + enemy.type.height
                     });
-                    enemy.shootCooldown = 100 + Math.random() * 100;
+                    enemy.shootCooldown = 60 + Math.random() * 80;
                 }
             });
 
             if (changeDirection) {
                 enemies.forEach(enemy => {
                     enemy.direction *= -1;
-                    enemy.y += 10;
+                    enemy.y += 15;
                 });
             }
         }
 
         function checkCollisions() {
-            // Bullet hits enemy
-            bullets.forEach((bullet, bulletIndex) => {
-                enemies.forEach((enemy, enemyIndex) => {
-                    if (bullet.x >= enemy.x && bullet.x <= enemy.x + enemy.type.width &&
-                        bullet.y >= enemy.y && bullet.y <= enemy.y + enemy.type.height) {
-                        bullets.splice(bulletIndex, 1);
+            // Player bullets hit enemies
+            bullets.forEach((bullet, bIndex) => {
+                enemies.forEach((enemy, eIndex) => {
+                    const dx = bullet.x - (enemy.x + enemy.type.width / 2);
+                    const dy = bullet.y - (enemy.y + enemy.type.height / 2);
+                    const dist = Math.sqrt(dx * dx + dy * dy);
 
-                        // Create explosion particles (Cuphead style)
-                        const enemyX = enemy.x + enemy.type.width / 2;
-                        const enemyY = enemy.y + enemy.type.height / 2;
-                        createParticles(enemyX, enemyY, enemy.type.color, 15);
-                        createParticles(enemyX, enemyY, '#ffff00', 8);
-                        createParticles(enemyX, enemyY, '#ffffff', 5);
-
-                        enemies.splice(enemyIndex, 1);
+                    if (dist < 25) {
+                        bullets.splice(bIndex, 1);
+                        createExplosion(
+                            enemy.x + enemy.type.width / 2,
+                            enemy.y + enemy.type.height / 2,
+                            enemy.type.color
+                        );
+                        createExplosion(
+                            enemy.x + enemy.type.width / 2,
+                            enemy.y + enemy.type.height / 2,
+                            '#ffff88'
+                        );
+                        enemies.splice(eIndex, 1);
                         score += enemy.type.points;
                         document.getElementById('score').textContent = score;
                     }
                 });
             });
 
-            // Enemy bullet hits player
-            enemyBullets.forEach((bullet, bulletIndex) => {
-                if (bullet.x >= player.x && bullet.x <= player.x + player.width &&
-                    bullet.y >= player.y && bullet.y <= player.y + player.height) {
-                    enemyBullets.splice(bulletIndex, 1);
-                    lives--;
-                    document.getElementById('lives').textContent = lives;
+            // Enemy bullets hit player
+            enemyBullets.forEach((bullet, bIndex) => {
+                const dx = bullet.x - (player.x + player.width / 2);
+                const dy = bullet.y - (player.y + player.height / 2);
+                const dist = Math.sqrt(dx * dx + dy * dy);
 
-                    if (lives <= 0) {
+                if (dist < 30) {
+                    enemyBullets.splice(bIndex, 1);
+                    hp--;
+                    updateHP();
+                    createExplosion(player.x + player.width / 2, player.y + player.height / 2, '#ff6600');
+
+                    if (hp <= 0) {
                         endGame();
                     }
                 }
             });
 
-            // Enemy reaches bottom
+            // Enemies reach bottom
             enemies.forEach(enemy => {
-                if (enemy.y + enemy.type.height >= player.y) {
+                if (enemy.y + enemy.type.height >= player.y - 20) {
                     endGame();
                 }
             });
 
             // Level complete
-            if (enemies.length === 0) {
+            if (enemies.length === 0 && gameRunning) {
                 level++;
                 document.getElementById('level').textContent = level;
                 createEnemies();
@@ -1127,36 +1265,107 @@
         }
 
         function shoot() {
-            bullets.push({
-                x: player.x + player.width / 2,
-                y: player.y
-            });
+            if (player.shootCooldown === 0) {
+                bullets.push({
+                    x: player.x + player.width / 2,
+                    y: player.y
+                });
+                player.shootCooldown = 15;
+            }
         }
 
+        // Film effects (Cuphead style)
+        function drawFilmEffects() {
+            // Film grain
+            const imageData = fxCtx.createImageData(fxCanvas.width, fxCanvas.height);
+            const data = imageData.data;
+            const grainIntensity = 0.08;
+
+            for (let i = 0; i < data.length; i += 4) {
+                if (Math.random() < 0.1) {
+                    const noise = (Math.random() - 0.5) * 255 * grainIntensity;
+                    data[i] = data[i + 1] = data[i + 2] = 128 + noise;
+                    data[i + 3] = Math.abs(noise) * 2;
+                }
+            }
+            fxCtx.putImageData(imageData, 0, 0);
+
+            // Vignette
+            const vignette = fxCtx.createRadialGradient(
+                fxCanvas.width / 2, fxCanvas.height / 2, 200,
+                fxCanvas.width / 2, fxCanvas.height / 2, fxCanvas.width * 0.7
+            );
+            vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            vignette.addColorStop(0.7, 'rgba(0, 0, 0, 0.3)');
+            vignette.addColorStop(1, 'rgba(0, 0, 0, 0.7)');
+            fxCtx.fillStyle = vignette;
+            fxCtx.fillRect(0, 0, fxCanvas.width, fxCanvas.height);
+
+            // Scan lines
+            fxCtx.globalAlpha = 0.05;
+            fxCtx.strokeStyle = '#000';
+            fxCtx.lineWidth = 1;
+            for (let i = 0; i < fxCanvas.height; i += 4) {
+                fxCtx.beginPath();
+                fxCtx.moveTo(0, i);
+                fxCtx.lineTo(fxCanvas.width, i);
+                fxCtx.stroke();
+            }
+            fxCtx.globalAlpha = 1;
+
+            // Film flicker
+            if (Math.random() > 0.95) {
+                fxCtx.globalAlpha = Math.random() * 0.1;
+                fxCtx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000';
+                fxCtx.fillRect(0, 0, fxCanvas.width, fxCanvas.height);
+                fxCtx.globalAlpha = 1;
+            }
+        }
+
+        // Update HP display
+        function updateHP() {
+            const container = document.getElementById('hpContainer');
+            container.innerHTML = '';
+            for (let i = 0; i < hp; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'hp-heart';
+                container.appendChild(heart);
+            }
+        }
+
+        // Game loop
         function gameLoop() {
             if (!gameRunning) return;
 
-            drawStars();
+            frameCount++;
 
+            // Draw background
+            drawBackground();
+
+            // Clear main canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // Update
             updatePlayer();
             updateBullets();
             updateEnemies();
             checkCollisions();
 
+            // Draw game elements
             drawPlayer();
             bullets.forEach(drawBullet);
             enemies.forEach(drawEnemy);
             enemyBullets.forEach(drawEnemyBullet);
             updateAndDrawParticles();
 
-            // Cuphead-style effects overlay
-            drawCupheadEffects();
+            // Clear effects canvas
+            fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+            drawFilmEffects();
 
             animationId = requestAnimationFrame(gameLoop);
         }
 
+        // Game controls
         function startGame() {
             if (gameStarted) return;
 
@@ -1165,15 +1374,18 @@
             document.getElementById('startScreen').style.display = 'none';
 
             score = 0;
-            lives = 3;
+            hp = 3;
             level = 1;
+            frameCount = 0;
             bullets = [];
             enemyBullets = [];
+            particles = [];
 
             document.getElementById('score').textContent = score;
-            document.getElementById('lives').textContent = lives;
             document.getElementById('level').textContent = level;
+            updateHP();
 
+            initBackground();
             createEnemies();
             gameLoop();
         }
@@ -1181,8 +1393,8 @@
         function endGame() {
             gameRunning = false;
             cancelAnimationFrame(animationId);
-            document.getElementById('finalScore').textContent = score;
-            document.getElementById('gameOver').style.display = 'block';
+            document.getElementById('finalScore').textContent = 'PUNTOS: ' + score;
+            document.getElementById('gameOver').style.display = 'flex';
         }
 
         function restartGame() {
@@ -1201,8 +1413,10 @@
             }
 
             if (e.key === 'p' || e.key === 'P') {
-                gameRunning = !gameRunning;
-                if (gameRunning) gameLoop();
+                if (gameStarted) {
+                    gameRunning = !gameRunning;
+                    if (gameRunning) gameLoop();
+                }
             }
         });
 
@@ -1210,8 +1424,8 @@
             keys[e.key] = false;
         });
 
-        // Start star animation
-        setInterval(drawStars, 50);
+        // Initialize
+        initBackground();
     </script>
 </body>
 </html>
